@@ -7,6 +7,9 @@ from alembic import context
 from app.config import settings
 
 
+from app.models.menu import Menu # noqa
+from app.models.submenu import SubMenu # noqa
+from app.models.dish import Dish # noqa
 from app.db.postgresql import Base
 
 
@@ -15,7 +18,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.utl", f"{settings.db_uri}?async_fallback=True")
+config.set_main_option("sqlalchemy.url", f"{settings.db_uri}?async_fallback=True")
 
 target_metadata = Base.metadata
 
