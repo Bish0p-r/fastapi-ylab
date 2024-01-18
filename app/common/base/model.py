@@ -10,6 +10,6 @@ from app.db.postgresql import Base
 class BaseModel(Base):
     __abstract__ = True
 
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(length=128), unique=True, nullable=False)
-    description: Mapped[str] = mapped_column(nullable=False)
+    description: Mapped[str] = mapped_column(String(length=1024), nullable=False)
