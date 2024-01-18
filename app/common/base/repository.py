@@ -30,7 +30,7 @@ class BaseRepository:
     @classmethod
     async def create(cls, **data):
         async with async_session_maker() as session:
-            query = insert(cls.model).values(**data).returning(cls.model)
+            query = insert(cls.model).values(**data).returning(cls.model.__table__.columns)
             result = await session.execute(query)
             await session.commit()
             return result.mappings().one_or_none()
@@ -38,7 +38,7 @@ class BaseRepository:
     @classmethod
     async def delete(cls, **filter_by):
         async with async_session_maker() as session:
-            user_booked_rooms = delete(cls.model).filter_by(**filter_by).returning(cls.model)
+            user_booked_rooms = delete(cls.model).filter_by(**filter_by).returning(cls.model.__table__.columns)
             result = await session.execute(user_booked_rooms)
             await session.commit()
             return result.mappings().one_or_none()
