@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DECIMAL, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.common.base.model import BaseModel
@@ -16,5 +17,5 @@ class Dish(BaseModel):
 
     price: Mapped[DECIMAL] = mapped_column(DECIMAL(scale=2), nullable=False)
 
-    submenu_id: Mapped[int] = mapped_column(ForeignKey("submenus.id", ondelete="CASCADE"), nullable=False)
-    submenu: Mapped["SubMenu"] = relationship(back_populates="dishes")
+    submenu_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('submenus.id', ondelete='CASCADE'), nullable=False)
+    submenu: Mapped[list['SubMenu']] = relationship('SubMenu', back_populates='dishes')

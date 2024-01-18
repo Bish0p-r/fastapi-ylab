@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, List
 
 from sqlalchemy import ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.common.base.model import BaseModel
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
 class SubMenu(BaseModel):
     __tablename__ = "submenus"
 
-    menu_id: Mapped[int] = mapped_column(ForeignKey("menus.id"), nullable=False)
+    menu_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('menus.id', ondelete='CASCADE'), nullable=False)
 
-    menu: Mapped["Menu"] = relationship(back_populates="submenu")
-    dishes: Mapped[List["Dish"]] = relationship(back_populates='submenu', cascade="all, delete")
+    menu: Mapped[list['Menu']] = relationship('Menu', back_populates='submenus')
+    dishes: Mapped[list['Dish']] = relationship('Dish', back_populates='submenu', cascade='delete')
