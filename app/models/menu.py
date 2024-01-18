@@ -13,4 +13,4 @@ if TYPE_CHECKING:
 class Menu(BaseModel):
     __tablename__ = "menus"
 
-    # submenu: Mapped[List["SubMenu"]] = relationship(back_populates="menu", cascade="all, delete")
+    submenu: Mapped[List["SubMenu"]] = relationship(back_populates="menu", cascade="all, delete")

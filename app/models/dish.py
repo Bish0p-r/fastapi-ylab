@@ -16,5 +16,5 @@ class Dish(BaseModel):
 
     price: Mapped[DECIMAL] = mapped_column(DECIMAL(scale=2), nullable=False)
 
-    submenu_id: Mapped[int] = mapped_column(ForeignKey("submenus.id"), nullable=False)
+    submenu_id: Mapped[int] = mapped_column(ForeignKey("submenus.id", ondelete="CASCADE"), nullable=False)
     submenu: Mapped["SubMenu"] = relationship(back_populates="dishes")
