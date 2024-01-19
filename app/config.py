@@ -6,9 +6,7 @@ from pydantic_settings import SettingsConfigDict, BaseSettings
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    MODE: Literal["DEV", "TEST", "PROD"]
-
-    SECRET_KEY: str
+    MODE: Literal["DEV", "TEST", "PROD"] = "DEV"
 
     DB_HOST: str
     DB_PORT: int
