@@ -16,15 +16,19 @@ class MenuRepository(BaseRepository):
     async def get_one_or_none_with_counts(cls, menu_id: UUID, **filter_by):
         async with async_session_maker() as session:
             query = (
-                select(
-                    Menu.__table__.columns,
-                    func.count(distinct(SubMenu.id)).label("submenus_count"),
-                    func.count(distinct(Dish.id)).label("dishes_count")
+                (
+                    select(
+                        Menu.__table__.columns,
+                        func.count(distinct(SubMenu.id)).label("submenus_count"),
+                        func.count(distinct(Dish.id)).label("dishes_count"),
+                    )
+                    .outerjoin(SubMenu, SubMenu.menu_id == Menu.id)
+                    .outerjoin(Dish, Dish.submenu_id == SubMenu.id)
+                    .group_by(Menu.id)
                 )
-                .outerjoin(SubMenu, SubMenu.menu_id == Menu.id)
-                .outerjoin(Dish, Dish.submenu_id == SubMenu.id)
-                .group_by(Menu.id)
-            ).where(cls.model.id == menu_id).filter_by(**filter_by)
+                .where(cls.model.id == menu_id)
+                .filter_by(**filter_by)
+            )
             result = await session.execute(query)
             return result.mappings().one_or_none()
 
@@ -35,7 +39,7 @@ class MenuRepository(BaseRepository):
                 select(
                     Menu.__table__.columns,
                     func.count(distinct(SubMenu.id)).label("submenus_count"),
-                    func.count(distinct(Dish.id)).label("dishes_count")
+                    func.count(distinct(Dish.id)).label("dishes_count"),
                 )
                 .outerjoin(SubMenu, SubMenu.menu_id == Menu.id)
                 .outerjoin(Dish, Dish.submenu_id == SubMenu.id)

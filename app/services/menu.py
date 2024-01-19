@@ -32,4 +32,3 @@ class MenuServices:
 
     async def delete(self, menu_id: UUID):
         return await self.repository.delete(id=menu_id)
-

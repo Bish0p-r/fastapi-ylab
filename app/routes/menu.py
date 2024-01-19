@@ -7,10 +7,7 @@ from app.schemas.menu import MenuSchema, MenuCreateSchema, MenuUpdateSchema, Men
 from app.dependencies.menu import GetMenuServices
 
 
-router = APIRouter(
-    prefix="/menus",
-    tags=["Menus"]
-)
+router = APIRouter(prefix="/menus", tags=["Menus"])
 
 
 @router.get("/")

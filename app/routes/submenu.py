@@ -7,10 +7,7 @@ from app.dependencies.submenu import GetSubMenuServices
 from app.schemas.submenu import SubMenuSchema, SubMenuCreateSchema, SubMenuUpdateSchema, SubMenuWithCountSchema
 
 
-router = APIRouter(
-    prefix="/menus/{menu_id}/submenus",
-    tags=["SubMenus"]
-)
+router = APIRouter(prefix="/menus/{menu_id}/submenus", tags=["SubMenus"])
 
 
 @router.get("/")
@@ -31,10 +28,10 @@ async def submenu_create(menu_id: UUID, menu_data: SubMenuCreateSchema, services
 
 @router.patch("/{submenu_id}")
 async def submenu_update(
-        menu_id: UUID, submenu_id: UUID, menu_data: SubMenuUpdateSchema, services: GetSubMenuServices
+    menu_id: UUID, submenu_id: UUID, menu_data: SubMenuUpdateSchema, services: GetSubMenuServices
 ) -> SubMenuSchema:
     data = menu_data.model_dump()
-    return await services.update(menu_id=menu_id, submenu_id=submenu_id,  data=data)
+    return await services.update(menu_id=menu_id, submenu_id=submenu_id, data=data)
 
 
 @router.delete("/{submenu_id}")

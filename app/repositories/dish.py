@@ -17,11 +17,7 @@ class DishRepository(BaseRepository):
             query = (
                 select(cls.model.__table__.columns)
                 .join(SubMenu, cls.model.submenu_id == SubMenu.id)
-                .where(
-                    cls.model.submenu_id == submenu_id,
-                    SubMenu.menu_id == menu_id,
-                    cls.model.id == dish_id
-                )
+                .where(cls.model.submenu_id == submenu_id, SubMenu.menu_id == menu_id, cls.model.id == dish_id)
             ).filter_by(**filter_by)
             result = await session.execute(query)
             return result.mappings().one_or_none()
@@ -32,10 +28,7 @@ class DishRepository(BaseRepository):
             query = (
                 select(cls.model.__table__.columns)
                 .join(SubMenu, cls.model.submenu_id == SubMenu.id)
-                .where(
-                    cls.model.submenu_id == submenu_id,
-                    SubMenu.menu_id == menu_id
-                )
+                .where(cls.model.submenu_id == submenu_id, SubMenu.menu_id == menu_id)
             ).filter_by(**filter_by)
             result = await session.execute(query)
             return result.mappings().all()

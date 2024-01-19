@@ -9,7 +9,6 @@ from app.common.base.model import BaseModel
 
 if TYPE_CHECKING:
     from app.models.submenu import SubMenu
-    from app.models.menu import Menu
 
 
 class Dish(BaseModel):
@@ -18,5 +17,5 @@ class Dish(BaseModel):
 
     price: Mapped[DECIMAL] = mapped_column(DECIMAL(scale=2), nullable=False)
 
-    submenu_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('submenus.id', ondelete='CASCADE'), nullable=False)
-    submenu: Mapped[list['SubMenu']] = relationship('SubMenu', back_populates='dishes')
+    submenu_id: Mapped[UUID] = mapped_column(UUID, ForeignKey("submenus.id", ondelete="CASCADE"), nullable=False)
+    submenu: Mapped[list["SubMenu"]] = relationship("SubMenu", back_populates="dishes")

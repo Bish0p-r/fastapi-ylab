@@ -9,4 +9,5 @@ from app.repositories.dish import DishRepository
 async def get_dish_services():
     return DishServices(repository=DishRepository)
 
+
 GetDishServices = Annotated[DishServices, Depends(get_dish_services)]
