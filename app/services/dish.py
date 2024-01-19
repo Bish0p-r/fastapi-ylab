@@ -1,11 +1,11 @@
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
 
+from app.common.exceptions import DishNotFound, DishWithThisTitleExists
 from app.repositories.dish import DishRepository
 from app.schemas.dish import DishSchema
-from app.common.exceptions import DishNotFound, DishWithThisTitleExists
 
 
 class DishServices:

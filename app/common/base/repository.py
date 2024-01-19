@@ -1,7 +1,7 @@
-from sqlalchemy import select, insert, delete, update
+from sqlalchemy import delete, insert, select, update
 
-from app.db.postgresql import async_session_maker
 from app.common.base.model import BaseModel
+from app.db.postgresql import async_session_maker
 
 
 class BaseRepository:

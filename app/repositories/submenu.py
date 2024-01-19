@@ -1,11 +1,11 @@
 from uuid import UUID
 
-from sqlalchemy import select, func, distinct
+from sqlalchemy import distinct, func, select
 
-from app.db.postgresql import async_session_maker
 from app.common.base.repository import BaseRepository
-from app.models.submenu import SubMenu
+from app.db.postgresql import async_session_maker
 from app.models.dish import Dish
+from app.models.submenu import SubMenu
 
 
 class SubMenuRepository(BaseRepository):

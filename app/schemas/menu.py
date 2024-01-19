@@ -1,4 +1,4 @@
-from app.common.base.schema import BaseSchema, BaseCreateSchema
+from app.common.base.schema import BaseCreateSchema, BaseSchema
 
 
 class MenuSchema(BaseSchema):

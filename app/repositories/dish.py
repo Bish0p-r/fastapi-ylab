@@ -2,8 +2,8 @@ from uuid import UUID
 
 from sqlalchemy import select
 
-from app.db.postgresql import async_session_maker
 from app.common.base.repository import BaseRepository
+from app.db.postgresql import async_session_maker
 from app.models.dish import Dish
 from app.models.submenu import SubMenu
 

@@ -2,8 +2,8 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.services.dish import DishServices
 from app.repositories.dish import DishRepository
+from app.services.dish import DishServices
 
 
 async def get_dish_services():

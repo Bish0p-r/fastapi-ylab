@@ -3,9 +3,9 @@ from uuid import UUID
 
 from fastapi import APIRouter
 
-from app.schemas.menu import MenuSchema, MenuCreateSchema, MenuUpdateSchema, MenuWithCountsSchema
 from app.dependencies.menu import GetMenuServices
-
+from app.schemas.menu import (MenuCreateSchema, MenuSchema, MenuUpdateSchema,
+                              MenuWithCountsSchema)
 
 router = APIRouter(prefix="/menus", tags=["Menus"])
 

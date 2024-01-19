@@ -6,7 +6,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.common.base.model import BaseModel
 
-
 if TYPE_CHECKING:
     from app.models.submenu import SubMenu
 

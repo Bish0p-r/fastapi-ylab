@@ -2,8 +2,8 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.services.menu import MenuServices
 from app.repositories.menu import MenuRepository
+from app.services.menu import MenuServices
 
 
 async def get_menu_services():

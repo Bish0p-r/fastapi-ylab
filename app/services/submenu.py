@@ -1,11 +1,11 @@
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
 
+from app.common.exceptions import SubMenuNotFound, SubMenuWithThisTitleExists
 from app.repositories.submenu import SubMenuRepository
 from app.schemas.submenu import SubMenuSchema, SubMenuWithCountSchema
-from app.common.exceptions import SubMenuWithThisTitleExists, SubMenuNotFound
 
 
 class SubMenuServices:

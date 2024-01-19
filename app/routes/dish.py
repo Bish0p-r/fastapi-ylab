@@ -1,11 +1,10 @@
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter
 
 from app.dependencies.dish import GetDishServices
-from app.schemas.dish import DishSchema, DishCreateSchema, DishUpdateSchema
-
+from app.schemas.dish import DishCreateSchema, DishSchema, DishUpdateSchema
 
 router = APIRouter(prefix="/menus/{menu_id}/submenus/{submenu_id}/dishes", tags=["Dishes"])
 

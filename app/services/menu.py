@@ -3,9 +3,9 @@ from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
 
+from app.common.exceptions import MenuNotFound, MenuWithThisTitleExists
 from app.repositories.menu import MenuRepository
 from app.schemas.menu import MenuSchema, MenuWithCountsSchema
-from app.common.exceptions import MenuWithThisTitleExists, MenuNotFound
 
 
 class MenuServices:

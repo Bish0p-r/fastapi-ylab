@@ -1,11 +1,11 @@
-from uuid import UUID
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter
 
 from app.dependencies.submenu import GetSubMenuServices
-from app.schemas.submenu import SubMenuSchema, SubMenuCreateSchema, SubMenuUpdateSchema, SubMenuWithCountSchema
-
+from app.schemas.submenu import (SubMenuCreateSchema, SubMenuSchema,
+                                 SubMenuUpdateSchema, SubMenuWithCountSchema)
 
 router = APIRouter(prefix="/menus/{menu_id}/submenus", tags=["SubMenus"])
 

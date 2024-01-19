@@ -1,17 +1,13 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 from app.config import settings
-
-
-from app.models.menu import Menu # noqa
-from app.models.submenu import SubMenu # noqa
-from app.models.dish import Dish # noqa
 from app.db.postgresql import Base
-
+from app.models.dish import Dish  # noqa
+from app.models.menu import Menu  # noqa
+from app.models.submenu import SubMenu  # noqa
 
 config = context.config
 
