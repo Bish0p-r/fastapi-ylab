@@ -1,17 +1,11 @@
 from sqlalchemy import select, insert, delete, update
 
 from app.db.postgresql import async_session_maker
+from app.common.base.model import BaseModel
 
 
 class BaseRepository:
-    model = None
-
-    @classmethod
-    async def get_by_id(cls, model_id: int):
-        async with async_session_maker() as session:
-            query = select(cls.model.__table__.columns).filter_by(id=model_id)
-            result = await session.execute(query)
-            return result.mappings().one_or_none()
+    model: BaseModel = None
 
     @classmethod
     async def get_one_or_none(cls, **filter_by):
@@ -44,9 +38,9 @@ class BaseRepository:
             return result.mappings().one_or_none()
 
     @classmethod
-    async def update(cls, model_id: int, **data):
+    async def update(cls, data: dict, **filter_by):
         async with async_session_maker() as session:
-            query = update(cls.model).values(**data).filter_by(id=model_id).returning(cls.model.__table__.columns)
+            query = update(cls.model).values(**data).filter_by(**filter_by).returning(cls.model.__table__.columns)
             result = await session.execute(query)
             await session.commit()
             return result.mappings().one_or_none()
