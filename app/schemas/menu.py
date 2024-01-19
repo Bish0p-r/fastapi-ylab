@@ -1,19 +1,21 @@
-from app.common.base.schema import BaseSchema
-
 from pydantic import BaseModel, Field, ConfigDict
+
+from app.common.base.schema import BaseSchema, BaseCreateSchema
 
 
 class MenuSchema(BaseSchema):
     ...
 
 
-class MenuCreateSchema(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    title: str = Field(max_length=128)
-    description: str = Field(max_length=1024)
+class MenuWithCountsSchema(BaseSchema):
+    submenus_count: int
+    dishes_count: int
 
 
-class MenuUpdateSchema(MenuCreateSchema):
+class MenuCreateSchema(BaseCreateSchema):
+    ...
+
+
+class MenuUpdateSchema(BaseCreateSchema):
     ...
 
