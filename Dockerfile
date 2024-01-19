@@ -1,11 +1,14 @@
 FROM python:3.11-slim
 
-RUN mkdir /fastapi-ylab
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-WORKDIR /fastapi-ylab
+RUN mkdir /app
 
-COPY requirements.txt .
+WORKDIR /app
+
+COPY . .
 
 RUN pip install -r requirements.txt
 
-COPY . .
+RUN chmod a+x docker/*.sh
