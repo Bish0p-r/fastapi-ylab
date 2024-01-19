@@ -20,19 +20,19 @@ async def dish_retrieve(menu_id: UUID, submenu_id: UUID, dish_id: UUID, services
 
 
 @router.post("/", status_code=201)
-async def dish_create(submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices) -> DishSchema:
+async def dish_create(menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices) -> DishSchema:
     data = menu_data.model_dump()
     return await services.create(submenu_id=submenu_id, data=data)
 
 
 @router.patch("/{dish_id}")
 async def dish_update(
-    submenu_id: UUID, dish_id: UUID, menu_data: DishUpdateSchema, services: GetDishServices
+    menu_id: UUID, submenu_id: UUID, dish_id: UUID, menu_data: DishUpdateSchema, services: GetDishServices
 ) -> DishSchema:
     data = menu_data.model_dump()
     return await services.update(submenu_id=submenu_id, dish_id=dish_id, data=data)
 
 
 @router.delete("/{dish_id}")
-async def dish_delete(submenu_id: UUID, dish_id: UUID, services: GetDishServices):
+async def dish_delete(menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices):
     return await services.delete(submenu_id=submenu_id, dish_id=dish_id)
