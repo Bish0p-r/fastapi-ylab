@@ -9,5 +9,3 @@ WORKDIR /ylab_proj
 COPY . .
 
 RUN pip install -r requirements.txt
-
-RUN chmod a+x *.sh
