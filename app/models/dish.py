@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import DECIMAL, ForeignKey
+from sqlalchemy import DECIMAL, ForeignKey, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class Dish(BaseModel):
     __tablename__ = "dishes"
+    __table_args__ = (UniqueConstraint("submenu_id", "title"),)
 
     price: Mapped[DECIMAL] = mapped_column(DECIMAL(scale=2), nullable=False)
 

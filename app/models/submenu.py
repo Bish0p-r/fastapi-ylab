@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class SubMenu(BaseModel):
     __tablename__ = "submenus"
+    __table_args__ = (UniqueConstraint("menu_id", "title"),)
 
     menu_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('menus.id', ondelete='CASCADE'), nullable=False)
 
