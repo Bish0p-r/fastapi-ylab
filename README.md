@@ -8,7 +8,7 @@
 ```bash
 git clone https://github.com/Bish0p-r/fastapi-ylab
 ```
-2. **Перейдите в директорию проекта**
+2. **Перейдите в директорию проекта.**
 ```bash
 cd fastapi-ylab
 ```
