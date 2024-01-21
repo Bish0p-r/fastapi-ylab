@@ -1,4 +1,3 @@
-from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter
@@ -10,7 +9,7 @@ router = APIRouter(prefix="/menus/{menu_id}/submenus/{submenu_id}/dishes", tags=
 
 
 @router.get("/")
-async def dish_list(menu_id: UUID, submenu_id: UUID, services: GetDishServices) -> List[DishSchema]:
+async def dish_list(menu_id: UUID, submenu_id: UUID, services: GetDishServices) -> list[DishSchema]:
     return await services.list(menu_id=menu_id, submenu_id=submenu_id)
 
 
@@ -20,7 +19,9 @@ async def dish_retrieve(menu_id: UUID, submenu_id: UUID, dish_id: UUID, services
 
 
 @router.post("/", status_code=201)
-async def dish_create(menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices) -> DishSchema:
+async def dish_create(
+        menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices
+) -> DishSchema:
     data = menu_data.model_dump()
     return await services.create(submenu_id=submenu_id, data=data)
 

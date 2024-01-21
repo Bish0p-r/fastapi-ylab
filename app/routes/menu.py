@@ -1,4 +1,3 @@
-from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter
@@ -11,7 +10,7 @@ router = APIRouter(prefix="/menus", tags=["Menus"])
 
 
 @router.get("/")
-async def menu_list(services: GetMenuServices) -> List[MenuWithCountsSchema]:
+async def menu_list(services: GetMenuServices) -> list[MenuWithCountsSchema]:
     return await services.list()
 
 

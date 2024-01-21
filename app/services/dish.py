@@ -1,4 +1,3 @@
-from typing import List
 from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
@@ -12,7 +11,7 @@ class DishServices:
     def __init__(self, repository: type[DishRepository]):
         self.repository = repository
 
-    async def list(self, menu_id: UUID, submenu_id: UUID) -> List[DishSchema]:
+    async def list(self, menu_id: UUID, submenu_id: UUID) -> list[DishSchema]:
         return await self.repository.get_all(menu_id=menu_id, submenu_id=submenu_id)
 
     async def retrieve(self, menu_id: UUID, submenu_id: UUID, dish_id: UUID) -> DishSchema:

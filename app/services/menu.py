@@ -1,4 +1,3 @@
-from typing import List
 from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
@@ -12,7 +11,7 @@ class MenuServices:
     def __init__(self, repository: type[MenuRepository]):
         self.repository = repository
 
-    async def list(self) -> List[MenuWithCountsSchema]:
+    async def list(self) -> list[MenuWithCountsSchema]:
         return await self.repository.get_all_with_counts()
 
     async def retrieve(self, menu_id: UUID) -> MenuWithCountsSchema:
