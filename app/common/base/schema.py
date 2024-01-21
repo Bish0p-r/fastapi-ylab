@@ -12,5 +12,5 @@ class BaseSchema(BaseModel):
 class BaseCreateSchema(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    title: str = Field(max_length=128)
-    description: str = Field(max_length=1024)
+    title: str = Field(max_length=64)
+    description: str = Field(max_length=512)
