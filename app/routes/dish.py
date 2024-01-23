@@ -3,37 +3,47 @@ from uuid import UUID
 from fastapi import APIRouter
 
 from app.dependencies.dish import GetDishServices
+from app.dependencies.postgresql import GetSession
 from app.schemas.dish import DishCreateSchema, DishSchema, DishUpdateSchema
 
 router = APIRouter(prefix="/menus/{menu_id}/submenus/{submenu_id}/dishes", tags=["Dishes"])
 
 
 @router.get("/")
-async def dish_list(menu_id: UUID, submenu_id: UUID, services: GetDishServices) -> list[DishSchema]:
-    return await services.list(menu_id=menu_id, submenu_id=submenu_id)
+async def dish_list(
+    menu_id: UUID, submenu_id: UUID, services: GetDishServices, session: GetSession
+) -> list[DishSchema]:
+    return await services.list(session=session, menu_id=menu_id, submenu_id=submenu_id)
 
 
 @router.get("/{dish_id}")
-async def dish_retrieve(menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices) -> DishSchema:
-    return await services.retrieve(menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id)
+async def dish_retrieve(
+    menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
+) -> DishSchema:
+    return await services.retrieve(session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id)
 
 
 @router.post("/", status_code=201)
 async def dish_create(
-        menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices
+    menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices, session: GetSession
 ) -> DishSchema:
     data = menu_data.model_dump()
-    return await services.create(submenu_id=submenu_id, data=data)
+    return await services.create(session=session, submenu_id=submenu_id, data=data)
 
 
 @router.patch("/{dish_id}")
 async def dish_update(
-    menu_id: UUID, submenu_id: UUID, dish_id: UUID, menu_data: DishUpdateSchema, services: GetDishServices
+    menu_id: UUID,
+    submenu_id: UUID,
+    dish_id: UUID,
+    menu_data: DishUpdateSchema,
+    services: GetDishServices,
+    session: GetSession,
 ) -> DishSchema:
     data = menu_data.model_dump()
-    return await services.update(submenu_id=submenu_id, dish_id=dish_id, data=data)
+    return await services.update(session=session, submenu_id=submenu_id, dish_id=dish_id, data=data)
 
 
 @router.delete("/{dish_id}")
-async def dish_delete(menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices):
-    return await services.delete(submenu_id=submenu_id, dish_id=dish_id)
+async def dish_delete(menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession):
+    return await services.delete(session=session, submenu_id=submenu_id, dish_id=dish_id)
