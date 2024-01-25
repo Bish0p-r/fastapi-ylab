@@ -27,4 +27,9 @@ docker-compose up -d
 docker-compose -f docker-compose-test.yaml up -d
 ```
 >После выполнения всех тестов контейнер завершит работу.
-> Прогресс выполнения тестов отображается в логах контейнера "ylab_app_test"
+> Прогресс выполнения тестов отображается в логах контейнера "app_test"
+
+**Логи выполненных тестов можно посмотреть с помощью команды:**
+```bash
+docker-compose -f docker-compose-test.yaml logs app_test 
+```
