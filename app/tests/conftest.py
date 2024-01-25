@@ -1,9 +1,9 @@
 import pytest
 from httpx import AsyncClient
 
-from app.main import app as fastapi_app
 from app.config import settings
-from app.db.postgresql import async_engine, Base
+from app.db.postgresql import Base, async_engine
+from app.main import app as fastapi_app
 
 
 @pytest.fixture(scope="session", autouse=True)

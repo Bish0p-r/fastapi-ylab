@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from pytest import FixtureRequest
 from httpx import AsyncClient
+from pytest import FixtureRequest
 
 
 async def test_menu_create(ac: AsyncClient, request: FixtureRequest):

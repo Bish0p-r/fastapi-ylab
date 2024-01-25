@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from pytest import FixtureRequest
 from httpx import AsyncClient
+from pytest import FixtureRequest
 
 
 async def test_counts_menu_create(ac: AsyncClient, request: FixtureRequest):
@@ -87,7 +87,7 @@ async def test_counts_menu_delete(ac: AsyncClient, menu_id: UUID):
 
 
 async def test_counts_menu_deleted_list(ac: AsyncClient):
-    response = await ac.get(f"api/v1/menus/")
+    response = await ac.get("api/v1/menus/")
 
     assert response.status_code == 200
     assert response.json() == []
