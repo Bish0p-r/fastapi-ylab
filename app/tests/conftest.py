@@ -17,15 +17,30 @@ async def prepare_database():
         await conn.run_sync(Base.metadata.create_all)
 
 
-@pytest.fixture(scope="session")
-def event_loop(request):
-    """Create an instance of the default event loop for each test case."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+# @pytest.fixture(scope="session")
+# def event_loop(request):
+#     """Create an instance of the default event loop for each test case."""
+#     loop = asyncio.get_event_loop_policy().new_event_loop()
+#     yield loop
+#     loop.close()
 
 
 @pytest.fixture(scope="function")
 async def ac():
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
         yield ac
+
+
+@pytest.fixture
+def menu_id(request):
+    return request.config.getoption("menu_id")
+
+
+@pytest.fixture
+def submenu_id(request):
+    return request.config.getoption("submenu_id")
+
+
+@pytest.fixture
+def dish_id(request):
+    return request.config.getoption("dish_id")
