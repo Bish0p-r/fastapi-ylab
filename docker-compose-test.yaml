@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  db:
+  db_test:
     image: postgres:15.1-alpine
     container_name: ylab_db_test
     environment:
@@ -13,18 +13,14 @@ services:
       interval: 3s
       timeout: 3s
       retries: 12
-    ports:
-      - "5432:5432"
 
-  app:
+  app_test:
     build:
       context: .
     container_name: ylab_app_test
     env_file:
       - .env
     depends_on:
-      db:
+      db_test:
         condition: service_healthy
     command: sh -c "pytest -v"
-    ports:
-      - 8000:8000
