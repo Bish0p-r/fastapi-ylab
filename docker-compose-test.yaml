@@ -19,6 +19,6 @@ services:
       - .env
     depends_on:
       - db
-    command: sh -c "alembic upgrade head && pytest -v"
+    command: sh -c "pytest -v"
     ports:
       - 8000:8000
