@@ -6,6 +6,11 @@ services:
     container_name: ylab_db
     env_file:
       - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 3s
+      timeout: 3s
+      retries: 12
     ports:
       - "5432:5432"
 
@@ -16,7 +21,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     command: sh -c "alembic upgrade head && uvicorn app.main:app --reload --host 0.0.0.0"
     ports:
       - 8000:8000
