@@ -4,8 +4,7 @@ from fastapi import APIRouter
 
 from app.dependencies.postgresql import GetSession
 from app.dependencies.submenu import GetSubMenuServices
-from app.schemas.submenu import (SubMenuCreateSchema, SubMenuSchema,
-                                 SubMenuUpdateSchema, SubMenuWithCountSchema)
+from app.schemas.submenu import SubMenuCreateSchema, SubMenuSchema, SubMenuUpdateSchema, SubMenuWithCountSchema
 
 router = APIRouter(prefix="/menus/{menu_id}/submenus", tags=["SubMenus"])
 

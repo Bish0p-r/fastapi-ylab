@@ -3,9 +3,8 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.db.postgresql import Base, async_engine
+from app.db.postgresql import Base, async_engine, async_session_maker
 from app.main import app as fastapi_app
-from app.db.postgresql import async_session_maker
 
 
 @pytest.fixture(scope="session", autouse=True)

@@ -4,8 +4,14 @@ from httpx import AsyncClient
 from pytest import FixtureRequest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.utils.tests import (is_submenu_fields_equal, count_submenus, is_menu_fields_equal,
-                                    count_menus, is_dish_fields_equal, count_dishes)
+from app.common.utils.tests import (
+    count_dishes,
+    count_menus,
+    count_submenus,
+    is_dish_fields_equal,
+    is_menu_fields_equal,
+    is_submenu_fields_equal,
+)
 
 
 async def test_dish_menu_create(ac: AsyncClient, request: FixtureRequest, session: AsyncSession):
@@ -39,7 +45,7 @@ async def test_dish_empty_list(ac: AsyncClient, session: AsyncSession, menu_id: 
 
 
 async def test_dish_create(
-        ac: AsyncClient, request: FixtureRequest, session: AsyncSession, menu_id: UUID, submenu_id: UUID
+    ac: AsyncClient, request: FixtureRequest, session: AsyncSession, menu_id: UUID, submenu_id: UUID
 ):
     data = {"title": "Test CRUD submenu title", "description": "Test CRUD submenu description", "price": "100.00"}
     response = await ac.post(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/", json=data)
@@ -66,7 +72,6 @@ async def test_dish_retrieve(ac: AsyncClient, session: AsyncSession, menu_id: UU
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}")
 
     assert response.status_code == 200
-
     assert await is_dish_fields_equal(menu_id, submenu_id, dish_id, response.json(), session)
 
 
@@ -100,4 +105,3 @@ async def test_menu_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID
 
     assert response.status_code == 200
     assert await count_menus(session) == 0
-

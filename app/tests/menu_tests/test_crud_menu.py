@@ -4,7 +4,7 @@ from httpx import AsyncClient
 from pytest import FixtureRequest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.utils.tests import is_menu_fields_equal, count_menus
+from app.common.utils.tests import count_menus, is_menu_fields_equal
 
 
 async def test_menu_empty_list(ac: AsyncClient, session: AsyncSession):
@@ -40,7 +40,6 @@ async def test_menu_retrieve(ac: AsyncClient, session: AsyncSession, menu_id: UU
     response = await ac.get(f"api/v1/menus/{menu_id}")
 
     assert response.status_code == 200
-
     assert await is_menu_fields_equal(menu_id, response.json(), session)
 
 
@@ -58,6 +57,4 @@ async def test_menu_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID
     response = await ac.delete(f"api/v1/menus/{menu_id}")
 
     assert response.status_code == 200
-
     assert await count_menus(session) == 0
-

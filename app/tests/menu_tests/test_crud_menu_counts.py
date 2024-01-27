@@ -1,8 +1,14 @@
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.utils.tests import (is_submenu_fields_equal, count_submenus, is_menu_fields_equal,
-                                    count_menus, is_dish_fields_equal, count_dishes)
+from app.common.utils.tests import (
+    count_dishes,
+    count_menus,
+    count_submenus,
+    is_dish_fields_equal,
+    is_menu_fields_equal,
+    is_submenu_fields_equal,
+)
 
 
 async def test_counts_menu_create(ac: AsyncClient, session: AsyncSession, ids_data: dict):
@@ -35,7 +41,7 @@ async def test_counts_submenu_create(ac: AsyncClient, session: AsyncSession, ids
     response = await ac.post(f"api/v1/menus/{ids_data['menu_id_1']}/submenus/", json=data)
 
     assert response.status_code == 201
-    assert await is_submenu_fields_equal(ids_data["menu_id_1"], response.json()["id"],  response.json(), session)
+    assert await is_submenu_fields_equal(ids_data["menu_id_1"], response.json()["id"], response.json(), session)
     assert await count_submenus(session, menu_id=ids_data["menu_id_1"]) == 1
 
     ids_data["submenu_id_1"] = response.json()["id"]
@@ -44,7 +50,7 @@ async def test_counts_submenu_create(ac: AsyncClient, session: AsyncSession, ids
     response = await ac.post(f"api/v1/menus/{ids_data['menu_id_1']}/submenus/", json=data)
 
     assert response.status_code == 201
-    assert await is_submenu_fields_equal(ids_data["menu_id_1"], response.json()["id"],  response.json(), session)
+    assert await is_submenu_fields_equal(ids_data["menu_id_1"], response.json()["id"], response.json(), session)
     assert await count_submenus(session, menu_id=ids_data["menu_id_1"]) == 2
 
     ids_data["submenu_id_2"] = response.json()["id"]
@@ -53,7 +59,7 @@ async def test_counts_submenu_create(ac: AsyncClient, session: AsyncSession, ids
     response = await ac.post(f"api/v1/menus/{ids_data['menu_id_2']}/submenus/", json=data)
 
     assert response.status_code == 201
-    assert await is_submenu_fields_equal(ids_data["menu_id_2"], response.json()["id"],  response.json(), session)
+    assert await is_submenu_fields_equal(ids_data["menu_id_2"], response.json()["id"], response.json(), session)
     assert await count_submenus(session, menu_id=ids_data["menu_id_2"]) == 1
 
     ids_data["submenu_id_3"] = response.json()["id"]
@@ -126,8 +132,9 @@ async def test_counts(ac: AsyncClient, session: AsyncSession, ids_data: dict):
     assert response.json()["id"] == ids_data["menu_id_1"]
 
     submenus_count = await count_submenus(session, menu_id=ids_data["menu_id_1"])
-    dishes_count = (await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_1"])
-                    + await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_2"]))
+    dishes_count = await count_dishes(
+        session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_1"]
+    ) + await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_2"])
 
     assert response.json()["submenus_count"] == submenus_count == 2
     assert response.json()["dishes_count"] == dishes_count == 3
@@ -165,8 +172,9 @@ async def test_counts_after_delete(ac: AsyncClient, session: AsyncSession, ids_d
     assert response.json()["id"] == ids_data["menu_id_1"]
 
     submenus_count = await count_submenus(session, menu_id=ids_data["menu_id_1"])
-    dishes_count = (await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_1"])
-                    + await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_2"]))
+    dishes_count = await count_dishes(
+        session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_1"]
+    ) + await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_2"])
 
     assert response.json()["submenus_count"] == submenus_count == 1
     assert response.json()["dishes_count"] == dishes_count == 1
@@ -210,8 +218,9 @@ async def test_counts_after_delete_all(ac: AsyncClient, session: AsyncSession, i
     assert response.json()["id"] == ids_data["menu_id_1"]
 
     submenus_count = await count_submenus(session, menu_id=ids_data["menu_id_1"])
-    dishes_count = (await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_1"])
-                    + await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_2"]))
+    dishes_count = await count_dishes(
+        session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_1"]
+    ) + await count_dishes(session, menu_id=ids_data["menu_id_1"], submenu_id=ids_data["submenu_id_2"])
 
     assert response.json()["submenus_count"] == submenus_count == 0
     assert response.json()["dishes_count"] == dishes_count == 0

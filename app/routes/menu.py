@@ -4,8 +4,7 @@ from fastapi import APIRouter
 
 from app.dependencies.menu import GetMenuServices
 from app.dependencies.postgresql import GetSession
-from app.schemas.menu import (MenuCreateSchema, MenuSchema, MenuUpdateSchema,
-                              MenuWithCountsSchema)
+from app.schemas.menu import MenuCreateSchema, MenuSchema, MenuUpdateSchema, MenuWithCountsSchema
 
 router = APIRouter(prefix="/menus", tags=["Menus"])
 

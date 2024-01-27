@@ -4,7 +4,7 @@ from httpx import AsyncClient
 from pytest import FixtureRequest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.utils.tests import is_submenu_fields_equal, count_submenus, is_menu_fields_equal, count_menus
+from app.common.utils.tests import count_menus, count_submenus, is_menu_fields_equal, is_submenu_fields_equal
 
 
 async def test_submenu_menu_create(ac: AsyncClient, request: FixtureRequest, session: AsyncSession):
@@ -36,7 +36,7 @@ async def test_submenu_create(ac: AsyncClient, request: FixtureRequest, session:
 
     assert response.json()["title"] == data["title"]
     assert response.json()["description"] == data["description"]
-    assert await is_submenu_fields_equal(menu_id, response.json()["id"],  response.json(), session)
+    assert await is_submenu_fields_equal(menu_id, response.json()["id"], response.json(), session)
     assert await count_submenus(session, menu_id=menu_id) == 1
 
 
@@ -51,7 +51,6 @@ async def test_submenu_retrieve(ac: AsyncClient, session: AsyncSession, menu_id:
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}")
 
     assert response.status_code == 200
-
     assert await is_submenu_fields_equal(menu_id, submenu_id, response.json(), session)
 
 
@@ -77,4 +76,3 @@ async def test_menu_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID
 
     assert response.status_code == 200
     assert await count_menus(session) == 0
-

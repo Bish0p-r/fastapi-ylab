@@ -2,13 +2,12 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.menu import MenuWithCountsSchema
-from app.schemas.submenu import SubMenuWithCountSchema
-from app.schemas.dish import DishSchema
-
+from app.repositories.dish import DishRepository
 from app.repositories.menu import MenuRepository
 from app.repositories.submenu import SubMenuRepository
-from app.repositories.dish import DishRepository
+from app.schemas.dish import DishSchema
+from app.schemas.menu import MenuWithCountsSchema
+from app.schemas.submenu import SubMenuWithCountSchema
 
 
 async def is_menu_fields_equal(menu_id: str | UUID, response_data: dict, session: AsyncSession) -> bool:
@@ -25,7 +24,7 @@ async def is_menu_fields_equal(menu_id: str | UUID, response_data: dict, session
 
 
 async def is_submenu_fields_equal(
-        menu_id: str | UUID, submenu_id: str | UUID, response_data: dict, session: AsyncSession
+    menu_id: str | UUID, submenu_id: str | UUID, response_data: dict, session: AsyncSession
 ) -> bool:
     submenu = await SubMenuRepository.get_one_or_none_with_counts(
         session=session, menu_id=menu_id, submenu_id=submenu_id
@@ -42,7 +41,7 @@ async def is_submenu_fields_equal(
 
 
 async def is_dish_fields_equal(
-        menu_id: str | UUID, submenu_id: str | UUID, dish_id: str | UUID, response_data: dict, session: AsyncSession
+    menu_id: str | UUID, submenu_id: str | UUID, dish_id: str | UUID, response_data: dict, session: AsyncSession
 ) -> bool:
     dish = await DishRepository.get_one_or_none(
         session=session, dish_id=dish_id, submenu_id=submenu_id, menu_id=menu_id
