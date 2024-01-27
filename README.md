@@ -26,12 +26,14 @@ docker-compose up -d
 1. Выполните первые 3 пункта установки.
 2. Запустите контейнер с тестами с помощью команды:
 ```bash
-docker-compose -f docker-compose-test.yaml up -d
+docker-compose -f docker-compose-test.yaml up
 ```
 >После выполнения всех тестов контейнер завершит работу.
 > Прогресс выполнения тестов отображается в логах контейнера "app_test"
 
-**Логи выполненных тестов можно посмотреть с помощью команды:**
+* Если логи не отображаются попробуйте запустить с помощью этой команды:
+
 ```bash
-docker-compose -f docker-compose-test.yaml logs app_test 
+docker-compose -f docker-compose-test.yaml up -d && docker logs --follow ylab_app_test
 ```
+
