@@ -30,7 +30,10 @@ class SubMenuServices:
             raise SubMenuWithThisTitleExists
 
     async def update(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID, data: dict) -> SubMenuSchema:
-        return await self.repository.update(session=session, id=submenu_id, menu_id=menu_id, data=data)
+        try:
+            return await self.repository.update(session=session, id=submenu_id, menu_id=menu_id, data=data)
+        except IntegrityError:
+            raise SubMenuWithThisTitleExists
 
     async def delete(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID):
         return await self.repository.delete(session=session, id=submenu_id, menu_id=menu_id)

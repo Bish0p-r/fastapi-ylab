@@ -30,7 +30,10 @@ class DishServices:
             raise DishWithThisTitleExists
 
     async def update(self, session: AsyncSession, submenu_id: UUID, dish_id: UUID, data: dict) -> DishSchema:
-        return await self.repository.update(session=session, id=dish_id, submenu_id=submenu_id, data=data)
+        try:
+            return await self.repository.update(session=session, id=dish_id, submenu_id=submenu_id, data=data)
+        except IntegrityError:
+            raise DishWithThisTitleExists
 
     async def delete(self, session: AsyncSession, submenu_id: UUID, dish_id: UUID):
         return await self.repository.delete(session=session, id=dish_id, submenu_id=submenu_id)

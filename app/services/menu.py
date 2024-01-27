@@ -28,7 +28,10 @@ class MenuServices:
             raise MenuWithThisTitleExists
 
     async def update(self, session: AsyncSession, menu_id: UUID, data: dict) -> MenuSchema:
-        return await self.repository.update(session=session, id=menu_id, data=data)
+        try:
+            return await self.repository.update(session=session, id=menu_id, data=data)
+        except IntegrityError:
+            raise MenuWithThisTitleExists
 
     async def delete(self, session: AsyncSession, menu_id: UUID):
         return await self.repository.delete(session=session, id=menu_id)
