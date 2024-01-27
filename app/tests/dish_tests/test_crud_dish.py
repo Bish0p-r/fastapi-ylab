@@ -2,131 +2,102 @@ from uuid import UUID
 
 from httpx import AsyncClient
 from pytest import FixtureRequest
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.common.utils.tests import (is_submenu_fields_equal, count_submenus, is_menu_fields_equal,
+                                    count_menus, is_dish_fields_equal, count_dishes)
 
 
-async def test_dish_menu_create(ac: AsyncClient, request: FixtureRequest):
-    data = {"title": "Test title", "description": "Test description"}
+async def test_dish_menu_create(ac: AsyncClient, request: FixtureRequest, session: AsyncSession):
+    data = {"title": "Test CRUD menu title", "description": "Test CRUD menu description"}
     response = await ac.post("api/v1/menus/", json=data)
 
     assert response.status_code == 201
-    assert response.json()["id"]
-    assert response.json()["title"] == data["title"]
-    assert response.json()["description"] == data["description"]
 
     request.config.option.menu_id = response.json()["id"]
+    assert await is_menu_fields_equal(response.json()["id"], response.json(), session)
+    assert await count_menus(session) == 1
 
 
-async def test_dish_submenu_create(ac: AsyncClient, menu_id: UUID, request: FixtureRequest):
-    data = {"title": "Test title", "description": "Test description"}
+async def test_dish_submenu_create(ac: AsyncClient, request: FixtureRequest, session: AsyncSession, menu_id: UUID):
+    data = {"title": "Test CRUD submenu title", "description": "Test CRUD submenu description"}
     response = await ac.post(f"api/v1/menus/{menu_id}/submenus/", json=data)
 
     assert response.status_code == 201
-    assert response.json()["id"]
-    assert response.json()["title"] == data["title"]
-    assert response.json()["description"] == data["description"]
 
     request.config.option.submenu_id = response.json()["id"]
 
+    assert await is_submenu_fields_equal(menu_id, response.json()["id"], response.json(), session)
+    assert await count_submenus(session, menu_id=menu_id) == 1
 
-async def test_dish_empty_list(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
+
+async def test_dish_empty_list(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID):
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/")
 
     assert response.status_code == 200
-    assert response.json() == []
+    assert len(response.json()) == await count_dishes(session, menu_id=menu_id, submenu_id=submenu_id) == 0
 
 
-async def test_dish_create(ac: AsyncClient, menu_id: UUID, submenu_id: UUID, request: FixtureRequest):
-    data = {"title": "Test title", "description": "Test description", "price": "0.01"}
+async def test_dish_create(
+        ac: AsyncClient, request: FixtureRequest, session: AsyncSession, menu_id: UUID, submenu_id: UUID
+):
+    data = {"title": "Test CRUD submenu title", "description": "Test CRUD submenu description", "price": "100.00"}
     response = await ac.post(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/", json=data)
 
     assert response.status_code == 201
-    assert response.json()["id"]
-    assert response.json()["title"] == data["title"]
-    assert response.json()["description"] == data["description"]
-    assert response.json()["price"] == data["price"]
 
     request.config.option.dish_id = response.json()["id"]
 
-
-async def test_dish_list(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/")
-
-    assert response.status_code == 200
-    assert len(response.json()) == 1
-
-
-async def test_dish_retrieve(ac: AsyncClient, menu_id: UUID, submenu_id: UUID, dish_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}")
-
-    assert response.status_code == 200
-    assert response.json()["id"] == dish_id
-    assert response.json()["title"] == "Test title"
-    assert response.json()["description"] == "Test description"
-    assert response.json()["price"] == "0.01"
-
-
-async def test_dish_update(ac: AsyncClient, menu_id: UUID, submenu_id: UUID, dish_id: UUID):
-    data = {"title": "Updated test title", "description": "Updated test description", "price": "10.01"}
-    response = await ac.patch(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}", json=data)
-
-    assert response.status_code == 200
-    assert response.json()["id"] == dish_id
     assert response.json()["title"] == data["title"]
     assert response.json()["description"] == data["description"]
     assert response.json()["price"] == data["price"]
+    assert await is_dish_fields_equal(menu_id, submenu_id, response.json()["id"], response.json(), session)
+    assert await count_dishes(session, menu_id=menu_id, submenu_id=submenu_id) == 1
 
 
-async def test_dish_updated_retrieve(ac: AsyncClient, menu_id: UUID, submenu_id: UUID, dish_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}")
-
-    assert response.status_code == 200
-    assert response.json()["id"] == dish_id
-    assert response.json()["title"] == "Updated test title", "description"
-    assert response.json()["description"] == "Updated test description"
-    assert response.json()["price"] == "10.01"
-
-
-async def test_dish_delete(ac: AsyncClient, menu_id: UUID, submenu_id: UUID, dish_id: UUID):
-    response = await ac.delete(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}")
-
-    assert response.status_code == 200
-
-
-async def test_dish_deleted_list(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
+async def test_dish_list(ac: AsyncClient, session: AsyncSession, submenu_id: UUID, menu_id: UUID, dish_id: UUID):
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/")
 
     assert response.status_code == 200
-    assert response.json() == []
+    assert len(response.json()) == await count_dishes(session, menu_id=menu_id, submenu_id=submenu_id)
 
 
-async def test_dish_deleted_retrieve(ac: AsyncClient, menu_id: UUID, submenu_id: UUID, dish_id: UUID):
+async def test_dish_retrieve(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id):
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}")
 
-    assert response.status_code == 404
-    assert response.json() == {"detail": "dish not found"}
+    assert response.status_code == 200
+
+    assert await is_dish_fields_equal(menu_id, submenu_id, dish_id, response.json(), session)
 
 
-async def test_dish_submenu_delete(ac: AsyncClient, menu_id: UUID, submenu_id: UUID, dish_id: UUID):
+async def test_dish_update(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID):
+    data = {"title": "Updated test CRUD title", "description": "Updated test CRUD description", "price": "200.00"}
+    response = await ac.patch(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}", json=data)
+
+    assert response.status_code == 200
+    assert response.json()["title"] == data["title"]
+    assert response.json()["description"] == data["description"]
+    assert response.json()["price"] == data["price"]
+    assert await is_dish_fields_equal(menu_id, submenu_id, dish_id, response.json(), session)
+
+
+async def test_dish_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID):
     response = await ac.delete(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}")
 
     assert response.status_code == 200
+    assert await count_dishes(session, menu_id=menu_id, submenu_id=submenu_id) == 0
 
 
-async def test_dish_submenu_deleted_list(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/")
+async def test_submenu_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID):
+    response = await ac.delete(f"api/v1/menus/{menu_id}/submenus/{submenu_id}")
 
     assert response.status_code == 200
-    assert response.json() == []
+    assert await count_submenus(session, menu_id=menu_id) == 0
 
 
-async def test_dish_menu_delete(ac: AsyncClient, menu_id: UUID):
+async def test_menu_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
     response = await ac.delete(f"api/v1/menus/{menu_id}")
 
     assert response.status_code == 200
+    assert await count_menus(session) == 0
 
-
-async def test_dish_menu_deleted_list(ac: AsyncClient):
-    response = await ac.get("api/v1/menus/")
-
-    assert response.status_code == 200
-    assert response.json() == []

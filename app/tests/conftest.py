@@ -1,11 +1,11 @@
-import asyncio
-
 import pytest
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.db.postgresql import Base, async_engine
 from app.main import app as fastapi_app
+from app.db.postgresql import async_session_maker
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -23,6 +23,12 @@ async def ac():
         yield ac
 
 
+@pytest.fixture(scope="function")
+async def session() -> AsyncSession:
+    async with async_session_maker() as session:
+        yield session
+
+
 @pytest.fixture
 def menu_id(request):
     return request.config.getoption("menu_id")
@@ -36,3 +42,9 @@ def submenu_id(request):
 @pytest.fixture
 def dish_id(request):
     return request.config.getoption("dish_id")
+
+
+@pytest.fixture(scope="session")
+def ids_data():
+    data = {}
+    yield data

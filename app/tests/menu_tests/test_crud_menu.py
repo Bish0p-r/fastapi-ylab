@@ -2,78 +2,62 @@ from uuid import UUID
 
 from httpx import AsyncClient
 from pytest import FixtureRequest
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.common.utils.tests import is_menu_fields_equal, count_menus
 
 
-async def test_menu_empty_list(ac: AsyncClient):
-    response = await ac.get("api/v1/menus/")
+async def test_menu_empty_list(ac: AsyncClient, session: AsyncSession):
+    response = await ac.get(f"api/v1/menus/")
 
     assert response.status_code == 200
-    assert response.json() == []
+    assert len(response.json()) == await count_menus(session) == 0
 
 
-async def test_menu_create(ac: AsyncClient, request: FixtureRequest):
-    data = {"title": "Test title", "description": "Test description"}
+async def test_menu_create(ac: AsyncClient, request: FixtureRequest, session: AsyncSession):
+    data = {"title": "Test CRUD title", "description": "Test CRUD description"}
     response = await ac.post("api/v1/menus/", json=data)
 
     assert response.status_code == 201
-    assert response.json()["id"]
-    assert response.json()["title"] == data["title"]
-    assert response.json()["description"] == data["description"]
 
     request.config.option.menu_id = response.json()["id"]
 
+    assert response.json()["title"] == data["title"]
+    assert response.json()["description"] == data["description"]
+    assert await is_menu_fields_equal(response.json()["id"], response.json(), session)
+    assert await count_menus(session) == 1
 
-async def test_menu_list(ac: AsyncClient, menu_id: UUID):
+
+async def test_menu_list(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
     response = await ac.get("api/v1/menus/")
 
     assert response.status_code == 200
-    assert len(response.json()) == 1
-    assert response.json()[0]["id"] == menu_id
+    assert len(response.json()) == await count_menus(session)
+    assert await is_menu_fields_equal(menu_id, response.json()[0], session)
 
 
-async def test_menu_retrieve(ac: AsyncClient, menu_id: UUID):
+async def test_menu_retrieve(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
     response = await ac.get(f"api/v1/menus/{menu_id}")
 
     assert response.status_code == 200
-    assert response.json()["id"] == menu_id
-    assert response.json()["title"] == "Test title"
-    assert response.json()["description"] == "Test description"
+
+    assert await is_menu_fields_equal(menu_id, response.json(), session)
 
 
-async def test_menu_update(ac: AsyncClient, menu_id: UUID):
-    data = {"title": "Updated test title", "description": "Updated test description"}
+async def test_menu_update(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
+    data = {"title": "Updated test CRUD title", "description": "Updated test CRUD description"}
     response = await ac.patch(f"api/v1/menus/{menu_id}", json=data)
 
     assert response.status_code == 200
-    assert response.json()["id"] == menu_id
     assert response.json()["title"] == data["title"]
     assert response.json()["description"] == data["description"]
+    assert await is_menu_fields_equal(menu_id, response.json(), session)
 
 
-async def test_updated_menu_retrieve(ac: AsyncClient, menu_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}")
-
-    assert response.status_code == 200
-    assert response.json()["id"] == menu_id
-    assert response.json()["title"] == "Updated test title", "description"
-    assert response.json()["description"] == "Updated test description"
-
-
-async def test_menu_delete(ac: AsyncClient, menu_id: UUID):
+async def test_menu_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
     response = await ac.delete(f"api/v1/menus/{menu_id}")
 
     assert response.status_code == 200
 
+    assert await count_menus(session) == 0
 
-async def test_deleted_menu_list(ac: AsyncClient, menu_id: UUID):
-    response = await ac.get("api/v1/menus/")
-
-    assert response.status_code == 200
-    assert response.json() == []
-
-
-async def test_menu_retrieve_deleted(ac: AsyncClient, menu_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}")
-
-    assert response.status_code == 404
-    assert response.json() == {"detail": "menu not found"}

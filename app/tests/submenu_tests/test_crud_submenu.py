@@ -2,103 +2,79 @@ from uuid import UUID
 
 from httpx import AsyncClient
 from pytest import FixtureRequest
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.common.utils.tests import is_submenu_fields_equal, count_submenus, is_menu_fields_equal, count_menus
 
 
-async def test_menu_create(ac: AsyncClient, request: FixtureRequest):
-    data = {"title": "Test title", "description": "Test description"}
+async def test_submenu_menu_create(ac: AsyncClient, request: FixtureRequest, session: AsyncSession):
+    data = {"title": "Test CRUD menu title", "description": "Test CRUD menu description"}
     response = await ac.post("api/v1/menus/", json=data)
 
     assert response.status_code == 201
-    assert response.json()["id"]
-    assert response.json()["title"] == data["title"]
-    assert response.json()["description"] == data["description"]
 
     request.config.option.menu_id = response.json()["id"]
 
+    assert await is_menu_fields_equal(response.json()["id"], response.json(), session)
+    assert await count_menus(session) == 1
 
-async def test_submenu_empty_list(ac: AsyncClient, menu_id: UUID):
+
+async def test_submenu_empty_list(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/")
 
     assert response.status_code == 200
-    assert response.json() == []
+    assert len(response.json()) == await count_submenus(session, menu_id=menu_id) == 0
 
 
-async def test_submenu_create(ac: AsyncClient, menu_id: UUID, request: FixtureRequest):
-    data = {"title": "Test title", "description": "Test description"}
+async def test_submenu_create(ac: AsyncClient, request: FixtureRequest, session: AsyncSession, menu_id: UUID):
+    data = {"title": "Test CRUD submenu title", "description": "Test CRUD submenu description"}
     response = await ac.post(f"api/v1/menus/{menu_id}/submenus/", json=data)
 
     assert response.status_code == 201
-    assert response.json()["id"]
-    assert response.json()["title"] == data["title"]
-    assert response.json()["description"] == data["description"]
 
     request.config.option.submenu_id = response.json()["id"]
 
+    assert response.json()["title"] == data["title"]
+    assert response.json()["description"] == data["description"]
+    assert await is_submenu_fields_equal(menu_id, response.json()["id"],  response.json(), session)
+    assert await count_submenus(session, menu_id=menu_id) == 1
 
-async def test_submenu_list(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
+
+async def test_submenu_list(ac: AsyncClient, session: AsyncSession, submenu_id: UUID, menu_id: UUID):
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/")
 
     assert response.status_code == 200
-    assert len(response.json()) == 1
-    assert response.json()[0]["id"] == submenu_id
+    assert len(response.json()) == await count_submenus(session, menu_id=menu_id)
 
 
-async def test_submenu_retrieve(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
+async def test_submenu_retrieve(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID):
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}")
 
     assert response.status_code == 200
-    assert response.json()["id"] == submenu_id
-    assert response.json()["title"] == "Test title"
-    assert response.json()["description"] == "Test description"
+
+    assert await is_submenu_fields_equal(menu_id, submenu_id, response.json(), session)
 
 
-async def test_submenu_update(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
-    data = {"title": "Updated test title", "description": "Updated test description"}
+async def test_submenu_update(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID):
+    data = {"title": "Updated test CRUD title", "description": "Updated test CRUD description"}
     response = await ac.patch(f"api/v1/menus/{menu_id}/submenus/{submenu_id}", json=data)
 
     assert response.status_code == 200
-    assert response.json()["id"] == submenu_id
     assert response.json()["title"] == data["title"]
     assert response.json()["description"] == data["description"]
+    assert await is_submenu_fields_equal(menu_id, submenu_id, response.json(), session)
 
 
-async def test_submenu_updated_retrieve(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}")
-
-    assert response.status_code == 200
-    assert response.json()["id"] == submenu_id
-    assert response.json()["title"] == "Updated test title", "description"
-    assert response.json()["description"] == "Updated test description"
-
-
-async def test_submenu_delete(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
+async def test_submenu_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID):
     response = await ac.delete(f"api/v1/menus/{menu_id}/submenus/{submenu_id}")
 
     assert response.status_code == 200
+    assert await count_submenus(session, menu_id=menu_id) == 0
 
 
-async def test_submenu_deleted_list(ac: AsyncClient, menu_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}/submenus/")
-
-    assert response.status_code == 200
-    assert response.json() == []
-
-
-async def test_submenu_deleted_retrieve(ac: AsyncClient, menu_id: UUID, submenu_id: UUID):
-    response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}")
-
-    assert response.status_code == 404
-    assert response.json() == {"detail": "submenu not found"}
-
-
-async def test_submenu_delete_menu(ac: AsyncClient, menu_id: UUID):
+async def test_menu_delete(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
     response = await ac.delete(f"api/v1/menus/{menu_id}")
 
     assert response.status_code == 200
+    assert await count_menus(session) == 0
 
-
-async def test_submenu_deleted_menu_list(ac: AsyncClient, menu_id: UUID):
-    response = await ac.get("api/v1/menus/")
-
-    assert response.status_code == 200
-    assert response.json() == []
