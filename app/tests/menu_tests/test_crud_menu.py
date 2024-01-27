@@ -28,6 +28,14 @@ async def test_menu_create(ac: AsyncClient, request: FixtureRequest, session: As
     assert await count_menus(session) == 1
 
 
+async def test_menu_invalid_create(ac: AsyncClient, session: AsyncSession):
+    data = {"title": "Test CRUD title", "description": "Test CRUD description"}
+    response = await ac.post("api/v1/menus/", json=data)
+
+    assert response.status_code == 400
+    assert await count_menus(session) == 1
+
+
 async def test_menu_list(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
     response = await ac.get("api/v1/menus/")
 

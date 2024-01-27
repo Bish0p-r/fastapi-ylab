@@ -61,6 +61,14 @@ async def test_dish_create(
     assert await count_dishes(session, menu_id=menu_id, submenu_id=submenu_id) == 1
 
 
+async def test_dish_invalid_create(ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID):
+    data = {"title": "Test CRUD submenu title", "description": "Test CRUD submenu description", "price": "100.00"}
+    response = await ac.post(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/", json=data)
+
+    assert response.status_code == 400
+    assert await count_dishes(session, menu_id=menu_id, submenu_id=submenu_id) == 1
+
+
 async def test_dish_list(ac: AsyncClient, session: AsyncSession, submenu_id: UUID, menu_id: UUID, dish_id: UUID):
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/")
 

@@ -40,6 +40,14 @@ async def test_submenu_create(ac: AsyncClient, request: FixtureRequest, session:
     assert await count_submenus(session, menu_id=menu_id) == 1
 
 
+async def test_submenu_invalid_create(ac: AsyncClient, session: AsyncSession, menu_id: UUID):
+    data = {"title": "Test CRUD submenu title", "description": "Test CRUD submenu description"}
+    response = await ac.post(f"api/v1/menus/{menu_id}/submenus/", json=data)
+
+    assert response.status_code == 400
+    assert await count_submenus(session, menu_id=menu_id) == 1
+
+
 async def test_submenu_list(ac: AsyncClient, session: AsyncSession, submenu_id: UUID, menu_id: UUID):
     response = await ac.get(f"api/v1/menus/{menu_id}/submenus/")
 
