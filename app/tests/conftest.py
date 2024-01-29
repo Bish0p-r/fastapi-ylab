@@ -1,3 +1,5 @@
+from uuid import UUID
+
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -5,6 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.db.postgresql import Base, async_engine, async_session_maker
 from app.main import app as fastapi_app
+from app.repositories.menu import MenuRepository
+from app.repositories.submenu import SubMenuRepository
+from app.repositories.dish import DishRepository
+from app.schemas.dish import DishSchema
+from app.schemas.menu import MenuWithCountsSchema
+from app.schemas.submenu import SubMenuWithCountSchema
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -47,3 +55,35 @@ def dish_id(request):
 def ids_data():
     data = {}
     yield data
+
+
+@pytest.fixture(scope="function")
+async def menu_obj(menu_id: UUID, session: AsyncSession) -> MenuWithCountsSchema:
+    return await MenuRepository.get_one_or_none_with_counts(session=session, menu_id=menu_id)
+
+
+@pytest.fixture(scope="function")
+async def submenu_obj(menu_id: UUID, submenu_id: UUID, session: AsyncSession) -> SubMenuWithCountSchema:
+    return await SubMenuRepository.get_one_or_none_with_counts(session=session, submenu_id=submenu_id, menu_id=menu_id)
+
+
+@pytest.fixture(scope="function")
+async def dish_obj(menu_id: UUID, submenu_id: UUID, dish_id: UUID, session: AsyncSession) -> DishSchema:
+    return await DishRepository.get_one_or_none(
+        session=session, submenu_id=submenu_id, menu_id=menu_id, dish_id=dish_id
+    )
+
+
+@pytest.fixture
+async def menu_repo(session: AsyncSession) -> type[MenuRepository]:
+    return MenuRepository
+
+
+@pytest.fixture
+async def submenu_repo(session: AsyncSession) -> type[SubMenuRepository]:
+    return SubMenuRepository
+
+
+@pytest.fixture
+async def dish_repo(session: AsyncSession) -> type[DishRepository]:
+    return DishRepository
