@@ -17,7 +17,7 @@ cd fastapi-ylab
 3. **Переименуйте ".env.example" в ".env".**
 4. **Запустите докер контейнер.**
 ```bash
-docker-compose up -d
+docker-compose up -d --build
 ```
 5. Приложение будет доступно по адресу: `http://localhost:8000/`
 
@@ -26,7 +26,7 @@ docker-compose up -d
 1. Выполните первые 3 пункта установки.
 2. Запустите контейнер с тестами с помощью команды:
 ```bash
-docker-compose -f docker-compose-test.yaml up
+docker-compose -f docker-compose-test.yaml up --build
 ```
 >После выполнения всех тестов контейнер завершит работу.
 > Прогресс выполнения тестов отображается в логах контейнера "ylab_app_test"
@@ -34,6 +34,6 @@ docker-compose -f docker-compose-test.yaml up
 * Если логи не отображаются попробуйте запустить с помощью этой команды:
 
 ```bash
-docker-compose -f docker-compose-test.yaml up -d && docker logs --follow ylab_app_test
+docker-compose -f docker-compose-test.yaml up -d --build && docker logs --follow ylab_app_test
 ```
 
