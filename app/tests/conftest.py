@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.db.postgresql import Base, async_engine, async_session_maker
 from app.main import app as fastapi_app
+from app.repositories.dish import DishRepository
 from app.repositories.menu import MenuRepository
 from app.repositories.submenu import SubMenuRepository
-from app.repositories.dish import DishRepository
 from app.schemas.dish import DishSchema
 from app.schemas.menu import MenuWithCountsSchema
 from app.schemas.submenu import SubMenuWithCountSchema
@@ -37,22 +37,22 @@ async def session() -> AsyncSession:
 
 
 @pytest.fixture
-def menu_id(request):
+async def menu_id(request):
     return request.config.getoption("menu_id")
 
 
 @pytest.fixture
-def submenu_id(request):
+async def submenu_id(request):
     return request.config.getoption("submenu_id")
 
 
 @pytest.fixture
-def dish_id(request):
+async def dish_id(request):
     return request.config.getoption("dish_id")
 
 
 @pytest.fixture(scope="session")
-def ids_data():
+async def ids_data():
     data = {}
     yield data
 
