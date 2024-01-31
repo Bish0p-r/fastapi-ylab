@@ -4,9 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file='.env', extra='ignore')
 
-    MODE: Literal["DEV", "TEST", "PROD"] = "DEV"
+    MODE: Literal['DEV', 'TEST', 'PROD'] = 'DEV'
 
     DB_HOST: str
     DB_PORT: int
@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     @property
     def db_uri(self):
-        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        return f'postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
 
     TEST_DB_HOST: str
     TEST_DB_PORT: int
@@ -27,10 +27,13 @@ class Settings(BaseSettings):
     @property
     def test_db_uri(self):
         return (
-            f"postgresql+asyncpg://{self.TEST_DB_USER}:"
-            f"{self.TEST_DB_PASS}@{self.TEST_DB_HOST}:"
-            f"{self.TEST_DB_PORT}/{self.TEST_DB_NAME}"
+            f'postgresql+asyncpg://{self.TEST_DB_USER}:'
+            f'{self.TEST_DB_PASS}@{self.TEST_DB_HOST}:'
+            f'{self.TEST_DB_PORT}/{self.TEST_DB_NAME}'
         )
+
+    REDIS_HOST: str
+    REDIS_PORT: int
 
 
 settings = Settings()

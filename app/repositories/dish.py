@@ -12,7 +12,9 @@ class DishRepository(BaseRepository):
     model = Dish
 
     @classmethod
-    async def get_one_or_none(cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID, **filter_by):
+    async def get_one_or_none_dish(
+            cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID, **filter_by
+    ):
         query = (
             select(cls.model.__table__.columns)
             .join(SubMenu, cls.model.submenu_id == SubMenu.id)
@@ -22,7 +24,7 @@ class DishRepository(BaseRepository):
         return result.mappings().one_or_none()
 
     @classmethod
-    async def get_all(cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, **filter_by):
+    async def get_all_dishes(cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, **filter_by):
         query = (
             select(cls.model.__table__.columns)
             .join(SubMenu, cls.model.submenu_id == SubMenu.id)

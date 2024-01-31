@@ -1,11 +1,11 @@
+from typing import Any
+
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.base.model import BaseModel
-
 
 class BaseRepository:
-    model: BaseModel = None
+    model: Any
 
     @classmethod
     async def get_one_or_none(cls, session: AsyncSession, **filter_by):

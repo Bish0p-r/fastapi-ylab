@@ -13,10 +13,10 @@ class DishServices:
         self.repository = repository
 
     async def list(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID) -> list[DishSchema]:
-        return await self.repository.get_all(session=session, menu_id=menu_id, submenu_id=submenu_id)
+        return await self.repository.get_all_dishes(session=session, menu_id=menu_id, submenu_id=submenu_id)
 
     async def retrieve(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID) -> DishSchema:
-        result = await self.repository.get_one_or_none(
+        result = await self.repository.get_one_or_none_dish(
             session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id
         )
         if result is None:
