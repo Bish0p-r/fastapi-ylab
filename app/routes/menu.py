@@ -41,6 +41,7 @@ async def menu_retrieve(menu_id: UUID, services: GetMenuServices, session: GetSe
 @router.post(
     '/',
     description='Create menu',
+    status_code=201,
     responses={
         201: {'model': MenuSchema, 'description': 'The menu was created'},
         400: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}}
