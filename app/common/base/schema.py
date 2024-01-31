@@ -10,7 +10,11 @@ class BaseSchema(BaseModel):
 
 
 class BaseCreateSchema(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra='forbid')
 
     title: str = Field(max_length=64)
     description: str = Field(max_length=512)
+
+
+class JsonResponseSchema(BaseModel):
+    detail: str
