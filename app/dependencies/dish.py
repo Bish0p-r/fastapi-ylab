@@ -6,7 +6,7 @@ from app.repositories.dish import DishRepository
 from app.services.dish import DishServices
 
 
-async def get_dish_services():
+async def get_dish_services() -> DishServices:
     return DishServices(repository=DishRepository)
 
 

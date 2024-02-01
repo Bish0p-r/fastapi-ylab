@@ -19,7 +19,7 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes', tags=
 @cache(ttl='3m', key='list:dish')
 async def dish_list(
     menu_id: UUID, submenu_id: UUID, services: GetDishServices, session: GetSession
-) -> list[DishSchema]:
+):
     return await services.list(session=session, menu_id=menu_id, submenu_id=submenu_id)
 
 
@@ -34,7 +34,7 @@ async def dish_list(
 @cache(ttl='3m', key='retrieve:{dish_id}')
 async def dish_retrieve(
     menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
-) -> DishSchema:
+):
     return await services.retrieve(session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id)
 
 
@@ -53,7 +53,7 @@ async def dish_retrieve(
 @cache.invalidate('retrieve:{submenu_id}')
 async def dish_create(
     menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices, session: GetSession
-) -> DishSchema:
+):
     data = menu_data.model_dump()
     return await services.create(session=session, submenu_id=submenu_id, data=data)
 
@@ -75,7 +75,7 @@ async def dish_update(
     menu_data: DishUpdateSchema,
     services: GetDishServices,
     session: GetSession,
-) -> DishSchema:
+):
     data = menu_data.model_dump()
     return await services.update(session=session, submenu_id=submenu_id, dish_id=dish_id, data=data)
 
@@ -94,5 +94,5 @@ async def dish_update(
 @cache.invalidate('retrieve:{dish_id}')
 async def dish_delete(
         menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
-) -> JsonResponseSchema:
+):
     return await services.delete(session=session, submenu_id=submenu_id, dish_id=dish_id)

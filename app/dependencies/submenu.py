@@ -6,7 +6,7 @@ from app.repositories.submenu import SubMenuRepository
 from app.services.submenu import SubMenuServices
 
 
-async def get_submenu_services():
+async def get_submenu_services() -> SubMenuServices:
     return SubMenuServices(repository=SubMenuRepository)
 
 

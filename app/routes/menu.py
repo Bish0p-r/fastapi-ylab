@@ -22,7 +22,7 @@ router = APIRouter(prefix='/menus', tags=['Menus'])
     responses={200: {'model': list[MenuWithCountsSchema], 'description': 'The list of menus was found'}}
 )
 @cache(ttl='3m', key='list:menu')
-async def menu_list(services: GetMenuServices, session: GetSession) -> list[MenuWithCountsSchema]:
+async def menu_list(services: GetMenuServices, session: GetSession):
     return await services.list(session=session)
 
 
@@ -34,7 +34,7 @@ async def menu_list(services: GetMenuServices, session: GetSession) -> list[Menu
         404: {'model': JsonResponseSchema, 'description': 'The menu was not found'}}
 )
 @cache(ttl='3m', key='retrieve:{menu_id}')
-async def menu_retrieve(menu_id: UUID, services: GetMenuServices, session: GetSession) -> MenuWithCountsSchema:
+async def menu_retrieve(menu_id: UUID, services: GetMenuServices, session: GetSession):
     return await services.retrieve(session=session, menu_id=menu_id)
 
 
@@ -48,7 +48,7 @@ async def menu_retrieve(menu_id: UUID, services: GetMenuServices, session: GetSe
         400: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}}
 )
 @cache.invalidate('list:menu')
-async def menu_create(menu_data: MenuCreateSchema, services: GetMenuServices, session: GetSession) -> MenuSchema:
+async def menu_create(menu_data: MenuCreateSchema, services: GetMenuServices, session: GetSession):
     data = menu_data.model_dump()
     return await services.create(session=session, data=data)
 
@@ -64,7 +64,7 @@ async def menu_create(menu_data: MenuCreateSchema, services: GetMenuServices, se
 @cache.invalidate('retrieve:{menu_id}')
 async def menu_update(
     menu_id: UUID, menu_data: MenuUpdateSchema, services: GetMenuServices, session: GetSession
-) -> MenuSchema:
+):
     data = menu_data.model_dump()
     return await services.update(session=session, menu_id=menu_id, data=data)
 
@@ -78,5 +78,5 @@ async def menu_update(
 )
 @cache.invalidate('list:*')
 @cache.invalidate('retrieve:{menu_id}')
-async def menu_delete(menu_id: UUID, services: GetMenuServices, session: GetSession) -> JsonResponseSchema:
+async def menu_delete(menu_id: UUID, services: GetMenuServices, session: GetSession):
     return await services.delete(session=session, menu_id=menu_id)

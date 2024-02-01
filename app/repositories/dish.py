@@ -1,6 +1,7 @@
+from typing import Sequence
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import RowMapping, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.base.repository import BaseRepository
@@ -14,7 +15,7 @@ class DishRepository(BaseRepository):
     @classmethod
     async def get_one_or_none_dish(
             cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID, **filter_by
-    ):
+    ) -> RowMapping | None:
         query = (
             select(cls.model.__table__.columns)
             .join(SubMenu, cls.model.submenu_id == SubMenu.id)
@@ -24,7 +25,9 @@ class DishRepository(BaseRepository):
         return result.mappings().one_or_none()
 
     @classmethod
-    async def get_all_dishes(cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, **filter_by):
+    async def get_all_dishes(
+            cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, **filter_by
+    ) -> Sequence[RowMapping]:
         query = (
             select(cls.model.__table__.columns)
             .join(SubMenu, cls.model.submenu_id == SubMenu.id)
