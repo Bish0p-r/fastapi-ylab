@@ -35,7 +35,7 @@ def event_loop(request):
 
 @pytest.fixture(scope='session', autouse=True)
 def init_cache():
-    cache.setup(f'redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}')
+    cache.setup(f'redis://{settings.REDIS_TEST_HOST}:{settings.REDIS_PORT}')
 
 
 @pytest.fixture(scope='function')

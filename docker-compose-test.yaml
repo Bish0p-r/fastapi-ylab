@@ -14,7 +14,7 @@ services:
       timeout: 3s
       retries: 12
 
-  redis:
+  redis_test:
     image: redis:7.0-alpine
     container_name: ylab_redis
     healthcheck:
