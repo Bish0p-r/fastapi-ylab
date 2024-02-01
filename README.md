@@ -2,7 +2,9 @@
 
 Домашние задания интенсива Ylab.
 
-Реализацию условия №3 второго дз можно найти по пути **app/repositories/menu.py**
+Реализацию условия №3 второго дз можно найти по пути [**app/repositories/menu.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/repositories/menu.py)
+
+Реализацию функции reverse() из ДЗ №3  можно найти по пути [**app/tests/utils.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/utils.py)
 
 <h1>Установка</h1>
 
@@ -36,4 +38,3 @@ docker-compose -f docker-compose-test.yaml up --build
 ```bash
 docker-compose -f docker-compose-test.yaml up -d --build && docker logs --follow ylab_app_test
 ```
-
