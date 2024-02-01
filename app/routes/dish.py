@@ -93,7 +93,7 @@ async def dish_update(
 )
 @cache.invalidate('list:*')
 @cache.invalidate('retrieve:{menu_id}')
-@cache.invalidate('retrieve:{submenu_id}')
+@cache.invalidate('retrieve:{menu_id}-{submenu_id}')
 @cache.invalidate('retrieve:{menu_id}-{submenu_id}-{dish_id}')
 async def dish_delete(
         menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
