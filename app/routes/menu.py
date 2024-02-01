@@ -78,5 +78,5 @@ async def menu_update(
 )
 @cache.invalidate('list:*')
 @cache.invalidate('retrieve:{menu_id}')
-async def menu_delete(menu_id: UUID, services: GetMenuServices, session: GetSession):
+async def menu_delete(menu_id: UUID, services: GetMenuServices, session: GetSession) -> JsonResponseSchema:
     return await services.delete(session=session, menu_id=menu_id)
