@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -35,5 +36,8 @@ class SubMenuServices:
         except IntegrityError:
             raise SubMenuWithThisTitleExists
 
-    async def delete(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID):
-        return await self.repository.delete(session=session, id=submenu_id, menu_id=menu_id)
+    async def delete(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID) -> JSONResponse:
+        result = await self.repository.delete(session=session, id=submenu_id, menu_id=menu_id)
+        if result is None:
+            raise SubMenuNotFound
+        return JSONResponse(status_code=200, content={'detail': 'submenu deleted'})

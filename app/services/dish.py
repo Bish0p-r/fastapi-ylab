@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -35,5 +36,8 @@ class DishServices:
         except IntegrityError:
             raise DishWithThisTitleExists
 
-    async def delete(self, session: AsyncSession, submenu_id: UUID, dish_id: UUID):
-        return await self.repository.delete(session=session, id=dish_id, submenu_id=submenu_id)
+    async def delete(self, session: AsyncSession, submenu_id: UUID, dish_id: UUID) -> JSONResponse:
+        result = await self.repository.delete(session=session, id=dish_id, submenu_id=submenu_id)
+        if result is None:
+            raise DishNotFound
+        return JSONResponse(status_code=200, content={'detail': 'dish deleted'})
