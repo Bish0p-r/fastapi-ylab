@@ -19,6 +19,7 @@ router = APIRouter(prefix='/menus', tags=['Menus'])
 @router.get(
     '/',
     description='Get list of menus',
+    response_model=list[MenuWithCountsSchema],
     responses={200: {'model': list[MenuWithCountsSchema], 'description': 'The list of menus was found'}}
 )
 @cache(ttl='3m', key='list:menu')
@@ -29,8 +30,9 @@ async def menu_list(services: GetMenuServices, session: GetSession):
 @router.get(
     '/{menu_id}',
     description='Get menu by id',
+    response_model=MenuWithCountsSchema,
     responses={
-        200: {'model': MenuSchema, 'description': 'The menu was found'},
+        200: {'model': MenuWithCountsSchema, 'description': 'The menu was found'},
         404: {'model': JsonResponseSchema, 'description': 'The menu was not found'}}
 )
 @cache(ttl='3m', key='retrieve:{menu_id}')
@@ -56,6 +58,7 @@ async def menu_create(menu_data: MenuCreateSchema, services: GetMenuServices, se
 @router.patch(
     '/{menu_id}',
     description='Update menu by id',
+    response_model=MenuSchema,
     responses={
         200: {'model': MenuSchema, 'description': 'The menu was updated'},
         400: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}}

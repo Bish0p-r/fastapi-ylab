@@ -31,6 +31,7 @@ async def submenu_list(
 @router.get(
     '/{submenu_id}',
     description='Get submenu by id',
+    response_model=SubMenuWithCountSchema,
     responses={
         200: {'model': SubMenuWithCountSchema, 'description': 'The submenu was found'},
         404: {'model': JsonResponseSchema, 'description': 'The submenu was not found'},
@@ -82,6 +83,7 @@ async def submenu_update(
 @router.delete(
     '/{submenu_id}',
     description='Delete submenu by id',
+    response_model=SubMenuSchema,
     responses={
         404: {'model': JsonResponseSchema, 'description': 'The submenu was not found'},
         200: {'model': JsonResponseSchema, 'description': 'The submenu was deleted'},

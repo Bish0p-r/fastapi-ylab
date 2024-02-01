@@ -14,6 +14,7 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes', tags=
 @router.get(
     '/',
     description='Get list of dishes',
+    response_model=list[DishSchema],
     responses={200: {'model': list[DishSchema], 'description': 'The list of dishes was found'}},
 )
 @cache(ttl='3m', key='list:dish')
@@ -26,6 +27,7 @@ async def dish_list(
 @router.get(
     '/{dish_id}',
     description='Get dish by id',
+    response_model=DishSchema,
     responses={
         200: {'model': DishSchema, 'description': 'The dish was found'},
         404: {'model': JsonResponseSchema, 'description': 'The dish was not found'},
@@ -61,6 +63,7 @@ async def dish_create(
 @router.patch(
     '/{dish_id}',
     description='Update dish by id',
+    response_model=DishSchema,
     responses={
         200: {'model': DishSchema, 'description': 'The dish was updated'},
         400: {'model': JsonResponseSchema, 'description': 'The dish with this title already exists'},
