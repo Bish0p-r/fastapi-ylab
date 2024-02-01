@@ -36,6 +36,8 @@ def event_loop(request):
 @pytest.fixture(scope='session', autouse=True)
 def init_cache():
     cache.setup(f'redis://{settings.REDIS_TEST_HOST}:{settings.REDIS_PORT}')
+    cache.invalidate('list:*')
+    cache.invalidate('retrieve:*')
 
 
 @pytest.fixture(scope='function')

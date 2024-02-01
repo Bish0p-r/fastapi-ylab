@@ -16,7 +16,7 @@ services:
 
   redis_test:
     image: redis:7.0-alpine
-    container_name: ylab_redis
+    container_name: ylab_redis_test
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
       interval: 1s
