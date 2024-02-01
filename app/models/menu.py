@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class Menu(BaseModel):
-    __tablename__ = "menus"
+    __tablename__ = 'menus'
 
     title: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
-    submenus: Mapped[list["SubMenu"]] = relationship("SubMenu", back_populates="menu", cascade="delete")
+    submenus: Mapped[list['SubMenu']] = relationship('SubMenu', back_populates='menu', cascade='delete')

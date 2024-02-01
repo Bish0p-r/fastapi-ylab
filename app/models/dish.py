@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 
 
 class Dish(BaseModel):
-    __tablename__ = "dishes"
-    __table_args__ = (UniqueConstraint("submenu_id", "title"),)
+    __tablename__ = 'dishes'
+    __table_args__ = (UniqueConstraint('submenu_id', 'title'),)
 
     price: Mapped[DECIMAL] = mapped_column(DECIMAL(scale=2), nullable=False)
 
-    submenu_id: Mapped[UUID] = mapped_column(UUID, ForeignKey("submenus.id", ondelete="CASCADE"), nullable=False)
-    submenu: Mapped[list["SubMenu"]] = relationship("SubMenu", back_populates="dishes")
+    submenu_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('submenus.id', ondelete='CASCADE'), nullable=False)
+    submenu: Mapped[list['SubMenu']] = relationship('SubMenu', back_populates='dishes')
