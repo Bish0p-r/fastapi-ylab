@@ -19,6 +19,7 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus', tags=['SubMenus'])
 @router.get(
     '/',
     description='Get list of submenus',
+    response_model=list[SubMenuWithCountSchema],
     responses={200: {'model': list[SubMenuWithCountSchema], 'description': 'The list of submenus was found'}},
 )
 @cache(ttl='3m', key='list:submenu')
@@ -83,7 +84,6 @@ async def submenu_update(
 @router.delete(
     '/{submenu_id}',
     description='Delete submenu by id',
-    response_model=SubMenuSchema,
     responses={
         404: {'model': JsonResponseSchema, 'description': 'The submenu was not found'},
         200: {'model': JsonResponseSchema, 'description': 'The submenu was deleted'},
