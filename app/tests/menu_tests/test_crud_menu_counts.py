@@ -8,9 +8,7 @@ from app.tests.utils import reverse
 
 
 async def test_counts_menu_create(ac: AsyncClient, session: AsyncSession, ids_data: dict, menu_repo: MenuRepository):
-    """
-    Создаю 2 меню и проверяю их количество в бд
-    """
+    """ Создаю 2 меню и проверяю их количество в бд """
     data = {'title': 'Test CRUD menu title #1', 'description': 'Test CRUD menu description #1'}
     response = await ac.post(reverse('menu_create'), json=data)
     menu = await menu_repo.get_one_or_none_with_counts(session=session, menu_id=response.json()['id'])
@@ -40,9 +38,7 @@ async def test_counts_menu_create(ac: AsyncClient, session: AsyncSession, ids_da
 async def test_counts_submenu_create(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, submenu_repo: SubMenuRepository
 ):
-    """
-    Создаю 2 подменю для первого меню и 1 подменю для второго меню
-    """
+    """ Создаю 2 подменю для первого меню и 1 подменю для второго меню """
     data = {'title': 'Test CRUD submenu title #1', 'description': 'Test CRUD submenu description #1'}
     response = await ac.post(reverse('submenu_create', menu_id=ids_data['menu_id_1']), json=data)
     submenu = await submenu_repo.get_one_or_none_with_counts(
@@ -90,9 +86,7 @@ async def test_counts_submenu_create(
 
 
 async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_data: dict, dish_repo: DishRepository):
-    """
-    Создаю 2 блюда для первого подменю, 1 блюдо для второго подменю и 1 блюдо для третьего подменю
-    """
+    """ Создаю 2 блюда для первого подменю, 1 блюдо для второго подменю и 1 блюдо для третьего подменю """
     data = {'title': 'Test CRUD submenu title #1', 'description': 'Test CRUD submenu description #1', 'price': '100.00'}
     response = await ac.post(
         reverse('dish_create', menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_1']),
@@ -104,6 +98,11 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
         menu_id=ids_data['menu_id_1'],
         submenu_id=ids_data['submenu_id_1'],
     )
+    dish_count = len(
+        await dish_repo.get_all_dishes(
+            session=session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_1']
+        )
+    )
 
     assert dish
     assert response.status_code == 201
@@ -111,11 +110,7 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
     assert response.json()['title'] == data['title'] == dish.title
     assert response.json()['description'] == data['description'] == dish.description
     assert response.json()['price'] == data['price'] == str(dish.price)
-    assert (
-        len(
-            await dish_repo.get_all_dishes(session=session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_1'])
-        ) == 1
-    )
+    assert dish_count == 1
 
     ids_data['dish_id_1'] = response.json()['id']
 
@@ -129,6 +124,11 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
         menu_id=ids_data['menu_id_1'],
         submenu_id=ids_data['submenu_id_1'],
     )
+    dish_count = len(
+        await dish_repo.get_all_dishes(
+            session=session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_1']
+        )
+    )
 
     assert dish
     assert response.status_code == 201
@@ -136,11 +136,7 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
     assert response.json()['title'] == data['title'] == dish.title
     assert response.json()['description'] == data['description'] == dish.description
     assert response.json()['price'] == data['price'] == str(dish.price)
-    assert (
-        len(
-            await dish_repo.get_all_dishes(session=session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_1'])
-        ) == 2
-    )
+    assert dish_count == 2
 
     ids_data['dish_id_2'] = response.json()['id']
 
@@ -154,6 +150,11 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
         menu_id=ids_data['menu_id_1'],
         submenu_id=ids_data['submenu_id_2'],
     )
+    dish_count = len(
+        await dish_repo.get_all_dishes(
+            session=session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_2']
+        )
+    )
 
     assert dish
     assert response.status_code == 201
@@ -161,11 +162,7 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
     assert response.json()['title'] == data['title'] == dish.title
     assert response.json()['description'] == data['description'] == dish.description
     assert response.json()['price'] == data['price'] == str(dish.price)
-    assert (
-        len(
-            await dish_repo.get_all_dishes(session=session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_2'])
-        ) == 1
-    )
+    assert dish_count == 1
 
     ids_data['dish_id_3'] = response.json()['id']
 
@@ -179,6 +176,11 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
         menu_id=ids_data['menu_id_2'],
         submenu_id=ids_data['submenu_id_3'],
     )
+    dish_count = len(
+        await dish_repo.get_all_dishes(
+            session=session, menu_id=ids_data['menu_id_2'], submenu_id=ids_data['submenu_id_3']
+        )
+    )
 
     assert dish
     assert response.status_code == 201
@@ -186,11 +188,7 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
     assert response.json()['title'] == data['title'] == dish.title
     assert response.json()['description'] == data['description'] == dish.description
     assert response.json()['price'] == data['price'] == str(dish.price)
-    assert (
-        len(
-            await dish_repo.get_all_dishes(session=session, menu_id=ids_data['menu_id_2'], submenu_id=ids_data['submenu_id_3'])
-        ) == 1
-    )
+    assert dish_count == 1
 
     ids_data['dish_id_4'] = response.json()['id']
 
@@ -198,9 +196,7 @@ async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_da
 async def test_counts(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, submenu_repo: SubMenuRepository, dish_repo: DishRepository
 ):
-    """
-    Проверяю количество подменю и блюд в меню
-    """
+    """ Проверяю количество подменю и блюд в меню """
     response = await ac.get(reverse('menu_retrieve', menu_id=ids_data['menu_id_1']))
 
     assert response.status_code == 200
@@ -231,26 +227,23 @@ async def test_counts(
 async def test_counts_submenu_delete(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, submenu_repo: SubMenuRepository, dish_repo: DishRepository
 ):
-    """
-    Удаляю первое подменю и проверяю количество подменю и блюд в первом меню
-    """
+    """ Удаляю первое подменю и проверяю количество подменю и блюд в первом меню """
     response = await ac.delete(
         reverse('submenu_delete', menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_1'])
+    )
+    dish_count = len(
+        await dish_repo.get_all_dishes(session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_1'])
     )
 
     assert response.status_code == 200
     assert len(await submenu_repo.get_all_with_counts(session, menu_id=ids_data['menu_id_1'])) == 1
-    assert (
-        len(await dish_repo.get_all_dishes(session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_1'])) == 0
-    )
+    assert dish_count == 0
 
 
 async def test_counts_after_delete(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, submenu_repo: SubMenuRepository, dish_repo: DishRepository
 ):
-    """
-    Проверяю количество подменю и блюд в меню после удаления первого подменю
-    """
+    """ Проверяю количество подменю и блюд в меню после удаления первого подменю """
     response = await ac.get(reverse('menu_retrieve', menu_id=ids_data['menu_id_1']))
 
     assert response.status_code == 200
@@ -281,36 +274,34 @@ async def test_counts_after_delete(
 async def test_counts_submenu_delete_all(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, submenu_repo: SubMenuRepository, dish_repo: DishRepository
 ):
-    """
-    Удаляю все подменю и проверяю количество подменю и блюд
-    """
+    """ Удаляю все подменю и проверяю количество подменю и блюд """
     response = await ac.delete(
         reverse('submenu_delete', menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_2'])
+    )
+    dish_count = len(
+        await dish_repo.get_all_dishes(session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_2'])
     )
 
     assert response.status_code == 200
     assert len(await submenu_repo.get_all_with_counts(session, menu_id=ids_data['menu_id_1'])) == 0
-    assert (
-        len(await dish_repo.get_all_dishes(session, menu_id=ids_data['menu_id_1'], submenu_id=ids_data['submenu_id_2'])) == 0
-    )
+    assert dish_count == 0
 
     response = await ac.delete(
         reverse('submenu_delete', menu_id=ids_data['menu_id_2'], submenu_id=ids_data['submenu_id_3'])
     )
+    dish_count = len(
+        await dish_repo.get_all_dishes(session, menu_id=ids_data['menu_id_2'], submenu_id=ids_data['submenu_id_3'])
+    )
 
     assert response.status_code == 200
     assert len(await submenu_repo.get_all_with_counts(session, menu_id=ids_data['menu_id_2'])) == 0
-    assert (
-        len(await dish_repo.get_all_dishes(session, menu_id=ids_data['menu_id_2'], submenu_id=ids_data['submenu_id_3'])) == 0
-    )
+    assert dish_count == 0
 
 
 async def test_counts_after_delete_all(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, submenu_repo: SubMenuRepository, dish_repo: DishRepository
 ):
-    """
-    Проверяю количество подменю и блюд в меню после удаления всех подменю
-    """
+    """ Проверяю количество подменю и блюд в меню после удаления всех подменю """
     response = await ac.get(reverse('menu_retrieve', menu_id=ids_data['menu_id_1']))
 
     assert response.status_code == 200
@@ -341,9 +332,7 @@ async def test_counts_after_delete_all(
 async def test_counts_delete_all_menus(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, menu_repo: MenuRepository
 ):
-    """
-    Удаляю все меню
-    """
+    """ Удаляю все меню """
     response = await ac.delete(reverse('menu_delete', menu_id=ids_data['menu_id_1']))
 
     assert response.status_code == 200

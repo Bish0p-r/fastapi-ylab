@@ -12,7 +12,7 @@ else:
     DATABASE_PARAMS = {}
 
 
-async_engine = create_async_engine(DATABASE_URL, echo=True, **DATABASE_PARAMS)
+async_engine = create_async_engine(DATABASE_URL, echo=False, **DATABASE_PARAMS)
 async_session_maker = async_sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 
 
