@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.exceptions import SubMenuNotFound, SubMenuWithThisTitleExists
 from app.repositories.submenu import SubMenuRepository
-from app.schemas.submenu import SubMenuWithCountSchema
 
 
 class SubMenuServices:
@@ -18,7 +17,7 @@ class SubMenuServices:
     async def list(self, session: AsyncSession, menu_id: UUID) -> Sequence[RowMapping]:
         return await self.repository.get_all_with_counts(session=session, menu_id=menu_id)
 
-    async def retrieve(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID) -> SubMenuWithCountSchema:
+    async def retrieve(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID) -> RowMapping:
         result = await self.repository.get_one_or_none_with_counts(
             session=session, menu_id=menu_id, submenu_id=submenu_id
         )
