@@ -38,7 +38,7 @@ async def submenu_list(
         404: {'model': JsonResponseSchema, 'description': 'The submenu was not found'},
     },
 )
-@cache(ttl='3m', key='retrieve:{submenu_id}')
+@cache(ttl='3m', key='retrieve:{menu_id}-{submenu_id}')
 async def submenu_retrieve(
     menu_id: UUID, submenu_id: UUID, services: GetSubMenuServices, session: GetSession
 ):
@@ -73,7 +73,7 @@ async def submenu_create(
     },
 )
 @cache.invalidate('list:submenu')
-@cache.invalidate('retrieve:{submenu_id}')
+@cache.invalidate('retrieve:{menu_id}-{submenu_id}')
 async def submenu_update(
     menu_id: UUID, submenu_id: UUID, menu_data: SubMenuUpdateSchema, services: GetSubMenuServices, session: GetSession
 ):
@@ -91,7 +91,7 @@ async def submenu_update(
 )
 @cache.invalidate('list:*')
 @cache.invalidate('retrieve:{menu_id}')
-@cache.invalidate('retrieve:{submenu_id}')
+@cache.invalidate('retrieve:{menu_id}-{submenu_id}*')
 async def submenu_delete(
         menu_id: UUID, submenu_id: UUID, services: GetSubMenuServices, session: GetSession
 ):

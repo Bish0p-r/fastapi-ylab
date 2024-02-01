@@ -33,7 +33,7 @@ async def dish_list(
         404: {'model': JsonResponseSchema, 'description': 'The dish was not found'},
     },
 )
-@cache(ttl='3m', key='retrieve:{dish_id}')
+@cache(ttl='3m', key='retrieve:{menu_id}-{submenu_id}-{dish_id}')
 async def dish_retrieve(
     menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
 ):
@@ -52,7 +52,7 @@ async def dish_retrieve(
 )
 @cache.invalidate('list:*')
 @cache.invalidate('retrieve:{menu_id}')
-@cache.invalidate('retrieve:{submenu_id}')
+@cache.invalidate('retrieve:{menu_id}-{submenu_id}')
 async def dish_create(
     menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices, session: GetSession
 ):
@@ -70,7 +70,7 @@ async def dish_create(
     },
 )
 @cache.invalidate('list:dish')
-@cache.invalidate('retrieve:{dish_id}')
+@cache.invalidate('retrieve:{menu_id}-{submenu_id}-{dish_id}')
 async def dish_update(
     menu_id: UUID,
     submenu_id: UUID,
@@ -94,7 +94,7 @@ async def dish_update(
 @cache.invalidate('list:*')
 @cache.invalidate('retrieve:{menu_id}')
 @cache.invalidate('retrieve:{submenu_id}')
-@cache.invalidate('retrieve:{dish_id}')
+@cache.invalidate('retrieve:{menu_id}-{submenu_id}-{dish_id}')
 async def dish_delete(
         menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
 ):
