@@ -9,7 +9,7 @@ from app.config import settings
 class CacheService:
     def __init__(self, ttl: int = settings.CACHE_TTL):
         self.ttl = ttl
-        self.host = settings.REDIS_TEST_HOST if settings.MODE == 'test' else settings.REDIS_HOST
+        self.host = settings.REDIS_TEST_HOST if settings.MODE == 'TEST' else settings.REDIS_HOST
         self.port = settings.REDIS_PORT
         self.redis = aioredis.Redis(host=self.host, port=self.port)
 
