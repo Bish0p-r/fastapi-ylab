@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     REDIS_TEST_HOST: str
 
-    CACHE_TTL: int = 18000
+    CACHE_TTL: int = 180
 
 
 settings = Settings()
