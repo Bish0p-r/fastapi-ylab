@@ -54,5 +54,5 @@ class MenuServices:
         result = await self.repository.delete(session=session, id=menu_id)
         if result is None:
             raise MenuNotFound
-        await self.cache_service.clear_cache('list:*', f'retrieve:{menu_id}*', f'retrieve:{menu_id}')
+        await self.cache_service.clear_cache('list:*', f'retrieve:{menu_id}*')
         return JSONResponse(status_code=200, content={'detail': 'menu deleted'})
