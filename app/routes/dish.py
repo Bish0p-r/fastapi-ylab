@@ -1,6 +1,5 @@
 from uuid import UUID
 
-from cashews import cache
 from fastapi import APIRouter
 
 from app.common.base.schema import JsonResponseSchema
@@ -17,7 +16,6 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes', tags=
     response_model=list[DishSchema],
     responses={200: {'model': list[DishSchema], 'description': 'The list of dishes was found'}},
 )
-@cache(ttl='3m', key='list:dish')
 async def dish_list(
     menu_id: UUID, submenu_id: UUID, services: GetDishServices, session: GetSession
 ):
@@ -33,7 +31,6 @@ async def dish_list(
         404: {'model': JsonResponseSchema, 'description': 'The dish was not found'},
     },
 )
-@cache(ttl='3m', key='retrieve:{menu_id}-{submenu_id}-{dish_id}')
 async def dish_retrieve(
     menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
 ):
@@ -50,14 +47,11 @@ async def dish_retrieve(
         400: {'model': JsonResponseSchema, 'description': 'The dish with this title already exists'},
     },
 )
-@cache.invalidate('list:*')
-@cache.invalidate('retrieve:{menu_id}')
-@cache.invalidate('retrieve:{menu_id}-{submenu_id}')
 async def dish_create(
     menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices, session: GetSession
 ):
     data = menu_data.model_dump()
-    return await services.create(session=session, submenu_id=submenu_id, data=data)
+    return await services.create(session=session, menu_id=menu_id, submenu_id=submenu_id, data=data)
 
 
 @router.patch(
@@ -69,8 +63,6 @@ async def dish_create(
         400: {'model': JsonResponseSchema, 'description': 'The dish with this title already exists'},
     },
 )
-@cache.invalidate('list:dish')
-@cache.invalidate('retrieve:{menu_id}-{submenu_id}-{dish_id}')
 async def dish_update(
     menu_id: UUID,
     submenu_id: UUID,
@@ -80,7 +72,7 @@ async def dish_update(
     session: GetSession,
 ):
     data = menu_data.model_dump()
-    return await services.update(session=session, submenu_id=submenu_id, dish_id=dish_id, data=data)
+    return await services.update(session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id, data=data)
 
 
 @router.delete(
@@ -91,11 +83,7 @@ async def dish_update(
         200: {'model': JsonResponseSchema, 'description': 'The dish was deleted'},
     },
 )
-@cache.invalidate('list:*')
-@cache.invalidate('retrieve:{menu_id}')
-@cache.invalidate('retrieve:{menu_id}-{submenu_id}')
-@cache.invalidate('retrieve:{menu_id}-{submenu_id}-{dish_id}')
 async def dish_delete(
         menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
 ):
-    return await services.delete(session=session, submenu_id=submenu_id, dish_id=dish_id)
+    return await services.delete(session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id)

@@ -3,7 +3,6 @@ from typing import AsyncGenerator
 from uuid import UUID
 
 import pytest
-from cashews import cache
 from httpx import AsyncClient
 from sqlalchemy import RowMapping
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -31,11 +30,6 @@ def event_loop(request):
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
-
-
-@pytest.fixture(scope='session', autouse=True)
-def init_cache():
-    cache.setup(f'redis://{settings.REDIS_TEST_HOST}:{settings.REDIS_PORT}')
 
 
 @pytest.fixture(scope='function')

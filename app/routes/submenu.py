@@ -1,6 +1,5 @@
 from uuid import UUID
 
-from cashews import cache
 from fastapi import APIRouter
 
 from app.common.base.schema import JsonResponseSchema
@@ -22,7 +21,6 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus', tags=['SubMenus'])
     response_model=list[SubMenuWithCountSchema],
     responses={200: {'model': list[SubMenuWithCountSchema], 'description': 'The list of submenus was found'}},
 )
-@cache(ttl='3m', key='list:submenu')
 async def submenu_list(
     menu_id: UUID, services: GetSubMenuServices, session: GetSession
 ):
@@ -38,7 +36,6 @@ async def submenu_list(
         404: {'model': JsonResponseSchema, 'description': 'The submenu was not found'},
     },
 )
-@cache(ttl='3m', key='retrieve:{menu_id}-{submenu_id}')
 async def submenu_retrieve(
     menu_id: UUID, submenu_id: UUID, services: GetSubMenuServices, session: GetSession
 ):
@@ -55,8 +52,6 @@ async def submenu_retrieve(
         400: {'model': JsonResponseSchema, 'description': 'The submenu with this title already exists'},
     },
 )
-@cache.invalidate('list:*menu')
-@cache.invalidate('retrieve:{menu_id}')
 async def submenu_create(
     menu_id: UUID, menu_data: SubMenuCreateSchema, services: GetSubMenuServices, session: GetSession
 ):
@@ -72,8 +67,6 @@ async def submenu_create(
         400: {'model': JsonResponseSchema, 'description': 'The submenu with this title already exists'},
     },
 )
-@cache.invalidate('list:submenu')
-@cache.invalidate('retrieve:{menu_id}-{submenu_id}')
 async def submenu_update(
     menu_id: UUID, submenu_id: UUID, menu_data: SubMenuUpdateSchema, services: GetSubMenuServices, session: GetSession
 ):
@@ -89,9 +82,6 @@ async def submenu_update(
         200: {'model': JsonResponseSchema, 'description': 'The submenu was deleted'},
     },
 )
-@cache.invalidate('list:*')
-@cache.invalidate('retrieve:{menu_id}')
-@cache.invalidate('retrieve:{menu_id}-{submenu_id}*')
 async def submenu_delete(
         menu_id: UUID, submenu_id: UUID, services: GetSubMenuServices, session: GetSession
 ):
