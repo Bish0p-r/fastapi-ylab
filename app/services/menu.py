@@ -12,9 +12,9 @@ from app.services.cache import CacheService
 
 
 class MenuServices:
-    def __init__(self, repository: type[MenuRepository]) -> None:
+    def __init__(self, repository: type[MenuRepository], cache_service: CacheService) -> None:
         self.repository = repository
-        self.cache_service = CacheService()
+        self.cache_service = cache_service
 
     async def list(self, session: AsyncSession) -> Sequence[RowMapping]:
         cached_data = await self.cache_service.get_cache('list:menu')
