@@ -13,6 +13,7 @@ from app.main import app as fastapi_app
 from app.repositories.dish import DishRepository
 from app.repositories.menu import MenuRepository
 from app.repositories.submenu import SubMenuRepository
+from app.services.cache import cache_service
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -42,6 +43,12 @@ async def ac() -> AsyncClient:
 async def session() -> AsyncSession:
     async with async_session_maker() as session:
         yield session
+
+
+@pytest.fixture(scope='session', autouse=True)
+async def init_cache() -> None:
+    cache_service.host = settings.REDIS_TEST_HOST
+    await cache_service.setup()
 
 
 @pytest.fixture

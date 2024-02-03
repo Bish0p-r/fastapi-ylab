@@ -7,10 +7,12 @@ from app.config import settings
 
 
 class CacheService:
-    def __init__(self, ttl: int = settings.CACHE_TTL):
+    def __init__(self, ttl: int = settings.CACHE_TTL, host: str = settings.REDIS_HOST, port: int = settings.REDIS_PORT):
         self.ttl = ttl
-        self.host = settings.REDIS_TEST_HOST if settings.MODE == 'TEST' else settings.REDIS_HOST
-        self.port = settings.REDIS_PORT
+        self.host = host
+        self.port = port
+
+    async def setup(self) -> None:
         self.redis = aioredis.Redis(host=self.host, port=self.port)
 
     async def clear_cache(self, *patterns: str) -> None:
@@ -27,3 +29,6 @@ class CacheService:
         cached_data = await self.redis.get(key)
         if cached_data is not None:
             return pickle.loads(cached_data)
+
+
+cache_service = CacheService()
