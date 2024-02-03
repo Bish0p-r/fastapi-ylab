@@ -7,7 +7,7 @@ from app.repositories.submenu import SubMenuRepository
 from app.tests.utils import reverse
 
 
-async def test_counts_menu_create(ac: AsyncClient, session: AsyncSession, ids_data: dict, menu_repo: MenuRepository):
+async def test_counts_2_menus_create(ac: AsyncClient, session: AsyncSession, ids_data: dict, menu_repo: MenuRepository):
     """ Создаю 2 меню и проверяю их количество в бд """
     data = {'title': 'Test CRUD menu title #1', 'description': 'Test CRUD menu description #1'}
     response = await ac.post(reverse('menu_create'), json=data)
@@ -35,7 +35,7 @@ async def test_counts_menu_create(ac: AsyncClient, session: AsyncSession, ids_da
     ids_data['menu_id_2'] = response.json()['id']
 
 
-async def test_counts_submenu_create(
+async def test_counts_3_submenus_create(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, submenu_repo: SubMenuRepository
 ):
     """ Создаю 2 подменю для первого меню и 1 подменю для второго меню """
@@ -85,7 +85,9 @@ async def test_counts_submenu_create(
     ids_data['submenu_id_3'] = response.json()['id']
 
 
-async def test_counts_dish_create(ac: AsyncClient, session: AsyncSession, ids_data: dict, dish_repo: DishRepository):
+async def test_counts_4_dishes_create(
+        ac: AsyncClient, session: AsyncSession, ids_data: dict, dish_repo: DishRepository
+):
     """ Создаю 2 блюда для первого подменю, 1 блюдо для второго подменю и 1 блюдо для третьего подменю """
     data = {'title': 'Test CRUD submenu title #1', 'description': 'Test CRUD submenu description #1', 'price': '100.00'}
     response = await ac.post(
@@ -240,7 +242,7 @@ async def test_counts_submenu_delete(
     assert dish_count == 0
 
 
-async def test_counts_after_delete(
+async def test_counts_after_delete_submenu(
     ac: AsyncClient, session: AsyncSession, ids_data: dict, submenu_repo: SubMenuRepository, dish_repo: DishRepository
 ):
     """ Проверяю количество подменю и блюд в меню после удаления первого подменю """
