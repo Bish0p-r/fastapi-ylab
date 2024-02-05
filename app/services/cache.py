@@ -7,7 +7,9 @@ from app.config import settings
 
 
 class CacheService:
-    def __init__(self, ttl: int = settings.CACHE_TTL, host: str = settings.REDIS_HOST, port: int = settings.REDIS_PORT):
+    def __init__(
+            self, ttl: int = settings.CACHE_TTL, host: str = settings.REDIS_HOST, port: int = settings.REDIS_PORT
+    ) -> None:
         self.ttl = ttl
         self.host = host
         self.port = port
@@ -16,9 +18,7 @@ class CacheService:
         self.redis = aioredis.Redis(host=self.host, port=self.port)
 
     async def clear_cache(self, *patterns: str) -> None:
-        keys = []
-        for pattern in patterns:
-            keys.extend(await self.redis.keys(pattern))
+        keys = {key for pattern in patterns for key in await self.redis.keys(pattern)}
         if keys:
             await self.redis.delete(*keys)
 
