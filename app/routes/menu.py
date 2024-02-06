@@ -16,7 +16,7 @@ router = APIRouter(prefix='/menus', tags=['Menus'])
 
 
 @router.get(
-    '/',
+    path='/',
     description='Get list of menus',
     response_model=list[MenuWithCountsSchema],
     responses={200: {'model': list[MenuWithCountsSchema], 'description': 'The list of menus was found'}}
@@ -26,25 +26,27 @@ async def menu_list(services: GetMenuServices, session: GetSession):
 
 
 @router.get(
-    '/{menu_id}',
+    path='/{menu_id}',
     description='Get menu by id',
     response_model=MenuWithCountsSchema,
     responses={
         200: {'model': MenuWithCountsSchema, 'description': 'The menu was found'},
-        404: {'model': JsonResponseSchema, 'description': 'The menu was not found'}}
+        404: {'model': JsonResponseSchema, 'description': 'The menu was not found'}
+    }
 )
 async def menu_retrieve(menu_id: UUID, services: GetMenuServices, session: GetSession):
     return await services.retrieve(session=session, menu_id=menu_id)
 
 
 @router.post(
-    '/',
+    path='/',
     description='Create menu',
     status_code=201,
     response_model=MenuSchema,
     responses={
         201: {'model': MenuSchema, 'description': 'The menu was created'},
-        400: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}}
+        409: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}
+    }
 )
 async def menu_create(menu_data: MenuCreateSchema, services: GetMenuServices, session: GetSession):
     data = menu_data.model_dump()
@@ -52,12 +54,13 @@ async def menu_create(menu_data: MenuCreateSchema, services: GetMenuServices, se
 
 
 @router.patch(
-    '/{menu_id}',
+    path='/{menu_id}',
     description='Update menu by id',
     response_model=MenuSchema,
     responses={
         200: {'model': MenuSchema, 'description': 'The menu was updated'},
-        400: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}}
+        409: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}
+    }
 )
 async def menu_update(
     menu_id: UUID, menu_data: MenuUpdateSchema, services: GetMenuServices, session: GetSession
@@ -67,11 +70,12 @@ async def menu_update(
 
 
 @router.delete(
-    '/{menu_id}',
+    path='/{menu_id}',
     description='Delete menu by id',
     responses={
         404: {'model': JsonResponseSchema, 'description': 'The menu was not found'},
-        200: {'model': JsonResponseSchema, 'description': 'The menu was deleted'}}
+        200: {'model': JsonResponseSchema, 'description': 'The menu was deleted'}
+    }
 )
 async def menu_delete(menu_id: UUID, services: GetMenuServices, session: GetSession):
     return await services.delete(session=session, menu_id=menu_id)

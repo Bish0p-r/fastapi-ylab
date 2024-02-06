@@ -11,7 +11,7 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes', tags=
 
 
 @router.get(
-    '/',
+    path='/',
     description='Get list of dishes',
     response_model=list[DishSchema],
     responses={200: {'model': list[DishSchema], 'description': 'The list of dishes was found'}},
@@ -23,7 +23,7 @@ async def dish_list(
 
 
 @router.get(
-    '/{dish_id}',
+    path='/{dish_id}',
     description='Get dish by id',
     response_model=DishSchema,
     responses={
@@ -38,13 +38,13 @@ async def dish_retrieve(
 
 
 @router.post(
-    '/',
+    path='/',
     description='Create dish',
     status_code=201,
     response_model=DishSchema,
     responses={
         201: {'model': DishSchema, 'description': 'The dish was created'},
-        400: {'model': JsonResponseSchema, 'description': 'The dish with this title already exists'},
+        409: {'model': JsonResponseSchema, 'description': 'The dish with this title already exists'},
     },
 )
 async def dish_create(
@@ -55,12 +55,12 @@ async def dish_create(
 
 
 @router.patch(
-    '/{dish_id}',
+    path='/{dish_id}',
     description='Update dish by id',
     response_model=DishSchema,
     responses={
         200: {'model': DishSchema, 'description': 'The dish was updated'},
-        400: {'model': JsonResponseSchema, 'description': 'The dish with this title already exists'},
+        409: {'model': JsonResponseSchema, 'description': 'The dish with this title already exists'},
     },
 )
 async def dish_update(
@@ -76,7 +76,7 @@ async def dish_update(
 
 
 @router.delete(
-    '/{dish_id}',
+    path='/{dish_id}',
     description='Delete dish by id',
     responses={
         404: {'model': JsonResponseSchema, 'description': 'The dish was not found'},

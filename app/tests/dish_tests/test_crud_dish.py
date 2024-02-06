@@ -85,7 +85,7 @@ async def test_dish_invalid_create(
     data = {'title': 'Test CRUD submenu title', 'description': 'Test CRUD submenu description', 'price': '100.00'}
     response = await ac.post(reverse('dish_create', menu_id=menu_id, submenu_id=submenu_id), json=data)
 
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert len(await dish_repo.get_all_dishes(session=session, menu_id=menu_id, submenu_id=submenu_id)) == 1
 
 

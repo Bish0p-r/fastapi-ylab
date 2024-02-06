@@ -60,7 +60,7 @@ async def test_submenu_invalid_create(
     data = {'title': 'Test CRUD submenu title', 'description': 'Test CRUD submenu description'}
     response = await ac.post(reverse('submenu_create', menu_id=menu_id), json=data)
 
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert len(await submenu_repo.get_all_with_counts(session=session, menu_id=menu_id)) == 1
 
 

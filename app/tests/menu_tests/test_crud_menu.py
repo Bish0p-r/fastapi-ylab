@@ -34,7 +34,7 @@ async def test_menu_invalid_create(ac: AsyncClient, session: AsyncSession, menu_
     data = {'title': 'Test CRUD title', 'description': 'Test CRUD description'}
     response = await ac.post(reverse('menu_create'), json=data)
 
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert len(await menu_repo.get_all(session=session)) == 1
 
 

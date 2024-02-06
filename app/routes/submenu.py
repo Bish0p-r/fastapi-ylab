@@ -16,7 +16,7 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus', tags=['SubMenus'])
 
 
 @router.get(
-    '/',
+    path='/',
     description='Get list of submenus',
     response_model=list[SubMenuWithCountSchema],
     responses={200: {'model': list[SubMenuWithCountSchema], 'description': 'The list of submenus was found'}},
@@ -28,7 +28,7 @@ async def submenu_list(
 
 
 @router.get(
-    '/{submenu_id}',
+    path='/{submenu_id}',
     description='Get submenu by id',
     response_model=SubMenuWithCountSchema,
     responses={
@@ -43,13 +43,13 @@ async def submenu_retrieve(
 
 
 @router.post(
-    '/',
+    path='/',
     description='Create submenu',
     status_code=201,
     response_model=SubMenuSchema,
     responses={
         201: {'model': SubMenuSchema, 'description': 'The submenu was created'},
-        400: {'model': JsonResponseSchema, 'description': 'The submenu with this title already exists'},
+        409: {'model': JsonResponseSchema, 'description': 'The submenu with this title already exists'},
     },
 )
 async def submenu_create(
@@ -60,11 +60,11 @@ async def submenu_create(
 
 
 @router.patch(
-    '/{submenu_id}',
+    path='/{submenu_id}',
     description='Update submenu by id',
     responses={
         200: {'model': SubMenuSchema, 'description': 'The submenu was updated'},
-        400: {'model': JsonResponseSchema, 'description': 'The submenu with this title already exists'},
+        409: {'model': JsonResponseSchema, 'description': 'The submenu with this title already exists'},
     },
 )
 async def submenu_update(
@@ -75,7 +75,7 @@ async def submenu_update(
 
 
 @router.delete(
-    '/{submenu_id}',
+    path='/{submenu_id}',
     description='Delete submenu by id',
     responses={
         404: {'model': JsonResponseSchema, 'description': 'The submenu was not found'},
