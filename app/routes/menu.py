@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 
 from app.common.base.schema import JsonResponseSchema
 from app.dependencies.menu import GetMenuServices
@@ -20,7 +20,7 @@ router = APIRouter(prefix='/menus', tags=['Menus'])
     path='/',
     description='Get list of menus',
     response_model=list[MenuWithCountsSchema],
-    responses={200: {'model': list[MenuWithCountsSchema], 'description': 'The list of menus was found'}}
+    responses={200: {'model': list[MenuWithCountsSchema], 'description': 'The list of menus was found'}},
 )
 async def menu_list(services: GetMenuServices, session: GetSession):
     return await services.list(session=session)
@@ -30,7 +30,7 @@ async def menu_list(services: GetMenuServices, session: GetSession):
     path='/tree',
     description='Get tree of menus',
     response_model=list[MenuTreeSchema],
-    responses={200: {'model': list[MenuTreeSchema], 'description': 'The tree of menus was found'}}
+    responses={200: {'model': list[MenuTreeSchema], 'description': 'The tree of menus was found'}},
 )
 async def menu_tree(services: GetMenuServices, session: GetSession):
     return await services.tree(session=session)
@@ -42,8 +42,8 @@ async def menu_tree(services: GetMenuServices, session: GetSession):
     response_model=MenuWithCountsSchema,
     responses={
         200: {'model': MenuWithCountsSchema, 'description': 'The menu was found'},
-        404: {'model': JsonResponseSchema, 'description': 'The menu was not found'}
-    }
+        404: {'model': JsonResponseSchema, 'description': 'The menu was not found'},
+    },
 )
 async def menu_retrieve(menu_id: UUID, services: GetMenuServices, session: GetSession):
     return await services.retrieve(session=session, menu_id=menu_id)
@@ -56,12 +56,14 @@ async def menu_retrieve(menu_id: UUID, services: GetMenuServices, session: GetSe
     response_model=MenuSchema,
     responses={
         201: {'model': MenuSchema, 'description': 'The menu was created'},
-        409: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}
-    }
+        409: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'},
+    },
 )
-async def menu_create(menu_data: MenuCreateSchema, services: GetMenuServices, session: GetSession):
+async def menu_create(
+    menu_data: MenuCreateSchema, services: GetMenuServices, session: GetSession, background_tasks: BackgroundTasks
+):
     data = menu_data.model_dump()
-    return await services.create(session=session, data=data)
+    return await services.create(session=session, data=data, background_tasks=background_tasks)
 
 
 @router.patch(
@@ -70,14 +72,18 @@ async def menu_create(menu_data: MenuCreateSchema, services: GetMenuServices, se
     response_model=MenuSchema,
     responses={
         200: {'model': MenuSchema, 'description': 'The menu was updated'},
-        409: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'}
-    }
+        409: {'model': JsonResponseSchema, 'description': 'Non-unique menu title'},
+    },
 )
 async def menu_update(
-    menu_id: UUID, menu_data: MenuUpdateSchema, services: GetMenuServices, session: GetSession
+    menu_id: UUID,
+    menu_data: MenuUpdateSchema,
+    services: GetMenuServices,
+    session: GetSession,
+    background_tasks: BackgroundTasks,
 ):
     data = menu_data.model_dump()
-    return await services.update(session=session, menu_id=menu_id, data=data)
+    return await services.update(session=session, menu_id=menu_id, data=data, background_tasks=background_tasks)
 
 
 @router.delete(
@@ -85,8 +91,8 @@ async def menu_update(
     description='Delete menu by id',
     responses={
         404: {'model': JsonResponseSchema, 'description': 'The menu was not found'},
-        200: {'model': JsonResponseSchema, 'description': 'The menu was deleted'}
-    }
+        200: {'model': JsonResponseSchema, 'description': 'The menu was deleted'},
+    },
 )
-async def menu_delete(menu_id: UUID, services: GetMenuServices, session: GetSession):
-    return await services.delete(session=session, menu_id=menu_id)
+async def menu_delete(menu_id: UUID, services: GetMenuServices, session: GetSession, background_tasks: BackgroundTasks):
+    return await services.delete(session=session, menu_id=menu_id, background_tasks=background_tasks)

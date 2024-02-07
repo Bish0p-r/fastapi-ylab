@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 
 from app.common.base.schema import JsonResponseSchema
 from app.dependencies.postgresql import GetSession
@@ -21,9 +21,7 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus', tags=['SubMenus'])
     response_model=list[SubMenuWithCountSchema],
     responses={200: {'model': list[SubMenuWithCountSchema], 'description': 'The list of submenus was found'}},
 )
-async def submenu_list(
-    menu_id: UUID, services: GetSubMenuServices, session: GetSession
-):
+async def submenu_list(menu_id: UUID, services: GetSubMenuServices, session: GetSession):
     return await services.list(session=session, menu_id=menu_id)
 
 
@@ -36,9 +34,7 @@ async def submenu_list(
         404: {'model': JsonResponseSchema, 'description': 'The submenu was not found'},
     },
 )
-async def submenu_retrieve(
-    menu_id: UUID, submenu_id: UUID, services: GetSubMenuServices, session: GetSession
-):
+async def submenu_retrieve(menu_id: UUID, submenu_id: UUID, services: GetSubMenuServices, session: GetSession):
     return await services.retrieve(session=session, menu_id=menu_id, submenu_id=submenu_id)
 
 
@@ -53,10 +49,14 @@ async def submenu_retrieve(
     },
 )
 async def submenu_create(
-    menu_id: UUID, menu_data: SubMenuCreateSchema, services: GetSubMenuServices, session: GetSession
+    menu_id: UUID,
+    menu_data: SubMenuCreateSchema,
+    services: GetSubMenuServices,
+    session: GetSession,
+    background_tasks: BackgroundTasks,
 ):
     data = menu_data.model_dump()
-    return await services.create(session=session, menu_id=menu_id, data=data)
+    return await services.create(session=session, menu_id=menu_id, data=data, background_tasks=background_tasks)
 
 
 @router.patch(
@@ -68,10 +68,17 @@ async def submenu_create(
     },
 )
 async def submenu_update(
-    menu_id: UUID, submenu_id: UUID, menu_data: SubMenuUpdateSchema, services: GetSubMenuServices, session: GetSession
+    menu_id: UUID,
+    submenu_id: UUID,
+    menu_data: SubMenuUpdateSchema,
+    services: GetSubMenuServices,
+    session: GetSession,
+    background_tasks: BackgroundTasks,
 ):
     data = menu_data.model_dump()
-    return await services.update(session=session, menu_id=menu_id, submenu_id=submenu_id, data=data)
+    return await services.update(
+        session=session, menu_id=menu_id, submenu_id=submenu_id, data=data, background_tasks=background_tasks
+    )
 
 
 @router.delete(
@@ -83,6 +90,12 @@ async def submenu_update(
     },
 )
 async def submenu_delete(
-        menu_id: UUID, submenu_id: UUID, services: GetSubMenuServices, session: GetSession
+    menu_id: UUID,
+    submenu_id: UUID,
+    services: GetSubMenuServices,
+    session: GetSession,
+    background_tasks: BackgroundTasks,
 ):
-    return await services.delete(session=session, menu_id=menu_id, submenu_id=submenu_id)
+    return await services.delete(
+        session=session, menu_id=menu_id, submenu_id=submenu_id, background_tasks=background_tasks
+    )

@@ -14,7 +14,7 @@ class DishRepository(BaseRepository):
 
     @classmethod
     async def get_one_or_none_dish(
-            cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID, **filter_by
+        cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID, **filter_by
     ) -> RowMapping | None:
         query = (
             select(cls.model.__table__.columns)
@@ -26,7 +26,7 @@ class DishRepository(BaseRepository):
 
     @classmethod
     async def get_all_dishes(
-            cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, **filter_by
+        cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, **filter_by
     ) -> Sequence[RowMapping]:
         query = (
             select(cls.model.__table__.columns)

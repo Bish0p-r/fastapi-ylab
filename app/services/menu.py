@@ -1,6 +1,7 @@
 from typing import Any, Sequence
 from uuid import UUID
 
+from fastapi import BackgroundTasks
 from fastapi.responses import JSONResponse
 from sqlalchemy import RowMapping
 from sqlalchemy.exc import IntegrityError
@@ -43,25 +44,27 @@ class MenuServices:
         await self.cache_service.set_cache(f'retrieve:{menu_id}', result)
         return result
 
-    async def create(self, session: AsyncSession, data: dict) -> RowMapping | None:
+    async def create(self, session: AsyncSession, data: dict, background_tasks: BackgroundTasks) -> RowMapping | None:
         try:
             result = await self.repository.create(session=session, **data)
         except IntegrityError:
             raise MenuWithThisTitleExists
-        await self.cache_service.clear_cache('list:tree', 'list:menu')
+        background_tasks.add_task(self.cache_service.clear_cache, ('list:tree', 'list:menu'))
         return result
 
-    async def update(self, session: AsyncSession, menu_id: UUID, data: dict) -> RowMapping | None:
+    async def update(
+        self, session: AsyncSession, menu_id: UUID, data: dict, background_tasks: BackgroundTasks
+    ) -> RowMapping | None:
         try:
             result = await self.repository.update(session=session, id=menu_id, data=data)
         except IntegrityError:
             raise MenuWithThisTitleExists
-        await self.cache_service.clear_cache('list:tree', 'list:menu', f'retrieve:{menu_id}')
+        background_tasks.add_task(self.cache_service.clear_cache, ('list:tree', 'list:menu', f'retrieve:{menu_id}'))
         return result
 
-    async def delete(self, session: AsyncSession, menu_id: UUID) -> JSONResponse:
+    async def delete(self, session: AsyncSession, menu_id: UUID, background_tasks: BackgroundTasks) -> JSONResponse:
         result = await self.repository.delete(session=session, id=menu_id)
         if result is None:
             raise MenuNotFound
-        await self.cache_service.clear_cache('list:*', f'retrieve:{menu_id}*')
+        background_tasks.add_task(self.cache_service.clear_cache, ('list:*', f'retrieve:{menu_id}*'))
         return JSONResponse(status_code=200, content={'detail': 'menu deleted'})

@@ -102,9 +102,7 @@ async def test_dish_list(
 async def test_dish_retrieve(
     ac: AsyncClient, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_obj: DishSchema
 ):
-    response = await ac.get(
-        reverse('dish_retrieve', menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_obj.id)
-    )
+    response = await ac.get(reverse('dish_retrieve', menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_obj.id))
 
     assert response.status_code == 200
     assert response.json()['id'] == str(dish_obj.id)

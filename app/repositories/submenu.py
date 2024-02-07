@@ -14,7 +14,7 @@ class SubMenuRepository(BaseRepository):
 
     @classmethod
     async def get_one_or_none_with_counts(
-            cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, **filter_by
+        cls, session: AsyncSession, menu_id: UUID, submenu_id: UUID, **filter_by
     ) -> RowMapping | None:
         query = (
             (

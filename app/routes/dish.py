@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 
 from app.common.base.schema import JsonResponseSchema
 from app.dependencies.dish import GetDishServices
@@ -16,9 +16,7 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes', tags=
     response_model=list[DishSchema],
     responses={200: {'model': list[DishSchema], 'description': 'The list of dishes was found'}},
 )
-async def dish_list(
-    menu_id: UUID, submenu_id: UUID, services: GetDishServices, session: GetSession
-):
+async def dish_list(menu_id: UUID, submenu_id: UUID, services: GetDishServices, session: GetSession):
     return await services.list(session=session, menu_id=menu_id, submenu_id=submenu_id)
 
 
@@ -31,9 +29,7 @@ async def dish_list(
         404: {'model': JsonResponseSchema, 'description': 'The dish was not found'},
     },
 )
-async def dish_retrieve(
-    menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
-):
+async def dish_retrieve(menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession):
     return await services.retrieve(session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id)
 
 
@@ -48,10 +44,17 @@ async def dish_retrieve(
     },
 )
 async def dish_create(
-    menu_id: UUID, submenu_id: UUID, menu_data: DishCreateSchema, services: GetDishServices, session: GetSession
+    menu_id: UUID,
+    submenu_id: UUID,
+    menu_data: DishCreateSchema,
+    services: GetDishServices,
+    session: GetSession,
+    background_tasks: BackgroundTasks,
 ):
     data = menu_data.model_dump()
-    return await services.create(session=session, menu_id=menu_id, submenu_id=submenu_id, data=data)
+    return await services.create(
+        session=session, menu_id=menu_id, submenu_id=submenu_id, data=data, background_tasks=background_tasks
+    )
 
 
 @router.patch(
@@ -70,9 +73,17 @@ async def dish_update(
     menu_data: DishUpdateSchema,
     services: GetDishServices,
     session: GetSession,
+    background_tasks: BackgroundTasks,
 ):
     data = menu_data.model_dump()
-    return await services.update(session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id, data=data)
+    return await services.update(
+        session=session,
+        menu_id=menu_id,
+        submenu_id=submenu_id,
+        dish_id=dish_id,
+        data=data,
+        background_tasks=background_tasks,
+    )
 
 
 @router.delete(
@@ -84,6 +95,13 @@ async def dish_update(
     },
 )
 async def dish_delete(
-        menu_id: UUID, submenu_id: UUID, dish_id: UUID, services: GetDishServices, session: GetSession
+    menu_id: UUID,
+    submenu_id: UUID,
+    dish_id: UUID,
+    services: GetDishServices,
+    session: GetSession,
+    background_tasks: BackgroundTasks,
 ):
-    return await services.delete(session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id)
+    return await services.delete(
+        session=session, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id, background_tasks=background_tasks
+    )
