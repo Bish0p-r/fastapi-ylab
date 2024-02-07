@@ -2,9 +2,29 @@
 
 Домашние задания интенсива Ylab.
 
-Реализацию условия №3 второго дз можно найти по пути [**app/repositories/menu.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/repositories/menu.py)
+<h1>Выполненные задания со звездочкой</h1>
 
-Реализацию функции reverse() из ДЗ №3  можно найти по пути [**app/tests/utils.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/utils.py)
+
+<h3>Дз №2</h3>
+
+Условие №3 (сложный ORM запрос) [**app/repositories/menu.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/repositories/menu.py)
+
+Условие №4 (тест кол-ва подменю/блюд) [**app/tests/menu_tests/test_crud_menu_counts.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/menu_tests/test_crud_menu_counts.py)
+
+
+<h3>Дз №3</h3>
+
+Условие №5 (описать эндпоинты) [**app/routes**](https://github.com/Bish0p-r/fastapi-ylab/tree/master/app/routes)
+
+Условие №6 (функция reverse()) [**app/tests/utils.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/utils.py)
+
+
+<h3>Дз №4</h3>
+
+Условие №5 (обновление меню из google sheets) [**...**]()
+
+Условие №6 (блюда по акции) [**...**]()
+
 
 <h1>Установка</h1>
 
