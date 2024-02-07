@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Any, Sequence
 from uuid import UUID
 
 from fastapi.responses import JSONResponse
@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.exceptions import MenuNotFound, MenuWithThisTitleExists
+from app.models.menu import Menu
 from app.repositories.menu import MenuRepository
 from app.services.cache import CacheService
 
@@ -24,6 +25,14 @@ class MenuServices:
         await self.cache_service.set_cache('list:menu', result)
         return result
 
+    async def tree(self, session: AsyncSession) -> Sequence[Menu] | Any:
+        cached_data = await self.cache_service.get_cache('list:tree')
+        if cached_data is not None:
+            return cached_data
+        result = await self.repository.get_tree_list(session=session)
+        await self.cache_service.set_cache('list:tree', result)
+        return result
+
     async def retrieve(self, session: AsyncSession, menu_id: UUID) -> RowMapping:
         cached_data = await self.cache_service.get_cache(f'retrieve:{menu_id}')
         if cached_data is not None:
@@ -39,7 +48,7 @@ class MenuServices:
             result = await self.repository.create(session=session, **data)
         except IntegrityError:
             raise MenuWithThisTitleExists
-        await self.cache_service.clear_cache('list:menu')
+        await self.cache_service.clear_cache('list:tree', 'list:menu')
         return result
 
     async def update(self, session: AsyncSession, menu_id: UUID, data: dict) -> RowMapping | None:
@@ -47,7 +56,7 @@ class MenuServices:
             result = await self.repository.update(session=session, id=menu_id, data=data)
         except IntegrityError:
             raise MenuWithThisTitleExists
-        await self.cache_service.clear_cache('list:menu', f'retrieve:{menu_id}')
+        await self.cache_service.clear_cache('list:tree', 'list:menu', f'retrieve:{menu_id}')
         return result
 
     async def delete(self, session: AsyncSession, menu_id: UUID) -> JSONResponse:

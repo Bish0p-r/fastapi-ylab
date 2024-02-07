@@ -1,4 +1,5 @@
 from app.common.base.schema import BaseCreateSchema, BaseSchema
+from app.schemas.submenu import SubMenuTreeSchema
 
 
 class MenuSchema(BaseSchema):
@@ -16,3 +17,7 @@ class MenuCreateSchema(BaseCreateSchema):
 
 class MenuUpdateSchema(BaseCreateSchema):
     ...
+
+
+class MenuTreeSchema(MenuSchema):
+    submenus: list[SubMenuTreeSchema]

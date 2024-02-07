@@ -41,7 +41,7 @@ class SubMenuServices:
             result = await self.repository.create(session=session, menu_id=menu_id, **data)
         except IntegrityError:
             raise SubMenuWithThisTitleExists
-        await self.cache_service.clear_cache('list:menu', 'list:submenu', f'retrieve:{menu_id}')
+        await self.cache_service.clear_cache('list:tree', 'list:menu', 'list:submenu', f'retrieve:{menu_id}')
         return result
 
     async def update(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID, data: dict) -> RowMapping | None:
@@ -49,7 +49,7 @@ class SubMenuServices:
             result = await self.repository.update(session=session, id=submenu_id, menu_id=menu_id, data=data)
         except IntegrityError:
             raise SubMenuWithThisTitleExists
-        await self.cache_service.clear_cache('list:submenu', f'retrieve:{menu_id}-{submenu_id}')
+        await self.cache_service.clear_cache('list:tree', 'list:submenu', f'retrieve:{menu_id}-{submenu_id}')
         return result
 
     async def delete(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID) -> JSONResponse:

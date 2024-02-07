@@ -3,6 +3,7 @@ from uuid import UUID
 
 from sqlalchemy import RowMapping, distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.common.base.repository import BaseRepository
 from app.models.dish import Dish
@@ -46,3 +47,9 @@ class MenuRepository(BaseRepository):
         ).filter_by(**filter_by)
         result = await session.execute(query)
         return result.mappings().all()
+
+    @classmethod
+    async def get_tree_list(cls, session: AsyncSession) -> Sequence[Menu]:
+        query = select(Menu).options(selectinload(Menu.submenus).options(selectinload(SubMenu.dishes)))
+        result = await session.execute(query)
+        return result.scalars().all()

@@ -51,7 +51,7 @@ class DishServices:
             result = await self.repository.update(session=session, id=dish_id, submenu_id=submenu_id, data=data)
         except IntegrityError:
             raise DishWithThisTitleExists
-        await self.cache_service.clear_cache('list:dish', f'retrieve:{menu_id}-{submenu_id}-{dish_id}')
+        await self.cache_service.clear_cache('list:tree', 'list:dish', f'retrieve:{menu_id}-{submenu_id}-{dish_id}')
         return result
 
     async def delete(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID, dish_id: UUID) -> JSONResponse:

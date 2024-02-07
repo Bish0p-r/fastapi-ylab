@@ -8,6 +8,7 @@ from app.dependencies.postgresql import GetSession
 from app.schemas.menu import (
     MenuCreateSchema,
     MenuSchema,
+    MenuTreeSchema,
     MenuUpdateSchema,
     MenuWithCountsSchema,
 )
@@ -23,6 +24,16 @@ router = APIRouter(prefix='/menus', tags=['Menus'])
 )
 async def menu_list(services: GetMenuServices, session: GetSession):
     return await services.list(session=session)
+
+
+@router.get(
+    path='/tree',
+    description='Get tree of menus',
+    response_model=list[MenuTreeSchema],
+    responses={200: {'model': list[MenuTreeSchema], 'description': 'The tree of menus was found'}}
+)
+async def menu_tree(services: GetMenuServices, session: GetSession):
+    return await services.tree(session=session)
 
 
 @router.get(
