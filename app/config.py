@@ -35,11 +35,9 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_TEST_HOST: str
-
     CACHE_TTL: int = 180
 
     GOOGLE_SHEETS_ID: str
-    GOOGLE_SHEETS_URL: str
 
     @property
     def google_sheets_url(self):
