@@ -45,8 +45,8 @@ class Settings(BaseSettings):
 
     RABBITMQ_HOST: str
     RABBITMQ_PORT: int
-    RABBITMQ_USER: str = 'quest'
-    RABBITMQ_PASS: str = 'quest'
+    RABBITMQ_USER: str = 'guest'
+    RABBITMQ_PASS: str = 'guest'
 
     @property
     def rabbitmq_amqp_url(self):
