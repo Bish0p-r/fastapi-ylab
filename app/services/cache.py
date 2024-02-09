@@ -22,6 +22,9 @@ class CacheService:
         if keys:
             await self.redis.delete(*keys)
 
+    async def clear_all_cache(self) -> None:
+        await self.redis.flushall()
+
     async def set_cache(self, key: str, value: Any) -> None:
         await self.redis.set(key, pickle.dumps(value), ex=self.ttl)
 
