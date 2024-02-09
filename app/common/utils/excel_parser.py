@@ -2,8 +2,11 @@ from decimal import Decimal
 from urllib.error import HTTPError
 
 import pandas as pd
+from celery.utils.log import get_task_logger
 
 from app.config import settings
+
+logger = get_task_logger(__name__)
 
 
 def parse_data(df: pd.DataFrame) -> dict[str, list[dict[str, str | Decimal]]]:
@@ -47,6 +50,9 @@ def parse_data(df: pd.DataFrame) -> dict[str, list[dict[str, str | Decimal]]]:
 def get_parsed_data(file_path: str = settings.google_sheets_url) -> dict[str, list[dict[str, str | Decimal]]]:
     try:
         df = pd.read_excel(file_path, header=None)
+        logger.info('Get parsed data from Google Sheets')
     except HTTPError:
+        logger.info('Can\'t get parsed data from Google Sheets')
         df = pd.read_excel('admin/Menu.xlsx', header=None)
+        logger.info('Get parsed data from local file')
     return parse_data(df)
