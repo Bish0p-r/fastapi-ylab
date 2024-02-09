@@ -5,7 +5,12 @@ from fastapi import APIRouter, BackgroundTasks
 from app.common.base.schema import JsonResponseSchema
 from app.dependencies.dish import GetDishServices
 from app.dependencies.postgresql import GetSession
-from app.schemas.dish import DishCreateSchema, DishSchema, DishUpdateSchema
+from app.schemas.dish import (
+    DishCreateSchema,
+    DishDiscountedPriceSchema,
+    DishSchema,
+    DishUpdateSchema,
+)
 
 router = APIRouter(prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes', tags=['Dishes'])
 
@@ -13,8 +18,8 @@ router = APIRouter(prefix='/menus/{menu_id}/submenus/{submenu_id}/dishes', tags=
 @router.get(
     path='/',
     description='Get list of dishes',
-    response_model=list[DishSchema],
-    responses={200: {'model': list[DishSchema], 'description': 'The list of dishes was found'}},
+    response_model=list[DishDiscountedPriceSchema],
+    responses={200: {'model': list[DishDiscountedPriceSchema], 'description': 'The list of dishes was found'}},
 )
 async def dish_list(menu_id: UUID, submenu_id: UUID, services: GetDishServices, session: GetSession):
     return await services.list(session=session, menu_id=menu_id, submenu_id=submenu_id)
@@ -23,9 +28,9 @@ async def dish_list(menu_id: UUID, submenu_id: UUID, services: GetDishServices, 
 @router.get(
     path='/{dish_id}',
     description='Get dish by id',
-    response_model=DishSchema,
+    response_model=DishDiscountedPriceSchema,
     responses={
-        200: {'model': DishSchema, 'description': 'The dish was found'},
+        200: {'model': DishDiscountedPriceSchema, 'description': 'The dish was found'},
         404: {'model': JsonResponseSchema, 'description': 'The dish was not found'},
     },
 )
