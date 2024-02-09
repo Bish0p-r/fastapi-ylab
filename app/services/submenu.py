@@ -45,8 +45,7 @@ class SubMenuServices:
         except IntegrityError:
             raise SubMenuWithThisTitleExists
         background_tasks.add_task(
-            self.cache_service.clear_cache,
-            ('list:tree', 'list:menu', 'list:submenu', f'retrieve:{menu_id}')
+            self.cache_service.clear_cache, ('list:tree', 'list:menu', 'list:submenu', f'retrieve:{menu_id}')
         )
         return result
 
@@ -58,8 +57,7 @@ class SubMenuServices:
         except IntegrityError:
             raise SubMenuWithThisTitleExists
         background_tasks.add_task(
-            self.cache_service.clear_cache,
-            ('list:tree', 'list:submenu', f'retrieve:{menu_id}-{submenu_id}')
+            self.cache_service.clear_cache, ('list:tree', 'list:submenu', f'retrieve:{menu_id}-{submenu_id}')
         )
         return result
 
@@ -70,7 +68,6 @@ class SubMenuServices:
         if result is None:
             raise SubMenuNotFound
         background_tasks.add_task(
-            self.cache_service.clear_cache,
-            ('list:*', f'retrieve:{menu_id}-{submenu_id}*', f'retrieve:{menu_id}')
+            self.cache_service.clear_cache, ('list:*', f'retrieve:{menu_id}-{submenu_id}*', f'retrieve:{menu_id}')
         )
         return JSONResponse(status_code=200, content={'detail': 'submenu deleted'})

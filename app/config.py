@@ -38,5 +38,25 @@ class Settings(BaseSettings):
 
     CACHE_TTL: int = 180
 
+    GOOGLE_SHEETS_ID: str
+    GOOGLE_SHEETS_URL: str
+
+    @property
+    def google_sheets_url(self):
+        return f'https://docs.google.com/spreadsheets/d/{self.GOOGLE_SHEETS_ID}/export?format=xlsx'
+
+    RABBITMQ_HOST: str
+    RABBITMQ_PORT: int
+    RABBITMQ_USER: str = 'quest'
+    RABBITMQ_PASS: str = 'quest'
+
+    @property
+    def rabbitmq_amqp_url(self):
+        return f'amqp://{self.RABBITMQ_USER}:{self.RABBITMQ_PASS}@{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}'
+
+    @property
+    def rabbitmq_rpc_url(self):
+        return f'rpc://{self.RABBITMQ_USER}:{self.RABBITMQ_PASS}@{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}'
+
 
 settings = Settings()
