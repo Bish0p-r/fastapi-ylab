@@ -47,7 +47,6 @@ def parse_data(df: pd.DataFrame) -> dict[str, list[dict[str, str | Decimal]]]:
 def get_parsed_data(file_path: str = settings.google_sheets_url) -> dict[str, list[dict[str, str | Decimal]]]:
     try:
         df = pd.read_excel(file_path, header=None)
-        return parse_data(df)
     except HTTPError:
         df = pd.read_excel('admin/Menu.xlsx', header=None)
-        return parse_data(df)
+    return parse_data(df)
