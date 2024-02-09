@@ -22,7 +22,7 @@
 <h3>Дз №4</h3>
 
 Условие №5 (обновление меню из google sheets): [**app/tasks/excel_to_db.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tasks/excel_to_db.py)
-* Можете проверить работоспособность приложения с моей [ссылкой](https://docs.google.com/spreadsheets/d/1LRTFejM3Po-I5i6moHvloF_yhmKUsTW8/edit#gid=1700880523) (она открыта для редактирования) либо укажите в .env файле ваш айди ссылки в поле GOOGLE_SHEETS_ID, если айди будет указан не верно парсится будет файл в директории **admin/Menu.xlsx**, логи того что именно спарсилось можно посмотреть контейнере **ylab_celery**.
+* Можете проверить работоспособность приложения с моей [ссылкой](https://docs.google.com/spreadsheets/d/1LRTFejM3Po-I5i6moHvloF_yhmKUsTW8/edit#gid=1700880523) (она открыта для редактирования) либо укажите в .env файле ваш айди ссылки в поле GOOGLE_SHEETS_ID, если айди будет указан не верно парсится будет файл в директории **admin/Menu.xlsx**, логи того что именно спарсилось можно посмотреть в контейнере **ylab_celery**.
 * Основная логика синхронизации описана в сервисе: [**app/services/admin.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/admin.py)
 * Логика парсинга находится в директории: [**app/common/utils/excel_parser.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/common/utils/excel_parser.py)
 
