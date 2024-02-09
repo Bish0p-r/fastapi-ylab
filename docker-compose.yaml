@@ -39,3 +39,16 @@ services:
     command: sh -c "alembic upgrade head && uvicorn app.main:app --reload --host 0.0.0.0"
     ports:
       - 8000:8000
+
+  celery:
+    build:
+      context: .
+    container_name: ylab_celery
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    command: sh -c "celery -A app.celery:celery worker --loglevel=INFO -B"
