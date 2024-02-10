@@ -54,5 +54,7 @@ class AdminServices:
         await self.delete_not_in(session, ids_data)
         await self.create_or_update(self.menu_repo, parsed_data['menus'], ('title', 'description'), session)
         await self.create_or_update(self.submenu_repo, parsed_data['submenus'], ('title', 'description'), session)
-        await self.create_or_update(self.dish_repo, parsed_data['dishes'], ('title', 'description', 'price'), session)
+        await self.create_or_update(
+            self.dish_repo, parsed_data['dishes'], ('title', 'description', 'price', 'discount'), session
+        )
         await self.cache_service.clear_all_cache()
