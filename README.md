@@ -26,8 +26,9 @@
 * Основная логика синхронизации описана в сервисе: [**app/services/admin.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/admin.py)
 * Логика парсинга находится в директории: [**app/common/utils/excel_parser.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/common/utils/excel_parser.py)
 
-Условие №6 (блюда по акции): [**app/models/dish.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/models/dish.py#L18)
-* Реализовал путем добавления поля "discount" для блюд, расчет цены с учетом скидки происходит в pydantic схеме: [**app/schemas/dish.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/schemas/dish.py#L27)
+Условие №6 (блюда по акции):
+* Скидки хранятся в кэше в формате Dish.id: discount [**app/services/admin.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/admin.py#L48)
+* Логика расчета цены с учетом скидки происходит в сервисном слое: [**app/services/dish.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/dish.py#L91)
 
 Тест нового эндпоинта: [**app/tests/menu_tests/test_crud_menu_tree.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/menu_tests/test_crud_menu_tree.py)
 
