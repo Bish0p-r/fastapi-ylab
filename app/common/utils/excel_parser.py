@@ -41,7 +41,7 @@ def parse_data(df: pd.DataFrame) -> dict[str, list[dict[str, str | Decimal]]]:
 
             if not pd.isna(row[df.columns[6]]):
                 current_discount = {
-                    'id': row[df.columns[2]],
+                    'id': current_dish['id'],
                     'discount': row[df.columns[6]]
                 }
                 parsed_data['discounts'].append(current_discount)

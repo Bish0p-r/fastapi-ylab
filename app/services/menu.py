@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import Any, Sequence
 from uuid import UUID
 
@@ -9,16 +8,19 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.exceptions import MenuNotFound, MenuWithThisTitleExists
-from app.models.dish import Dish
 from app.models.menu import Menu
 from app.repositories.menu import MenuRepository
 from app.services.cache import CacheService
+from app.services.dish import DishServices
 
 
 class MenuServices:
-    def __init__(self, repository: type[MenuRepository], cache_service: CacheService) -> None:
+    def __init__(
+            self, repository: type[MenuRepository], cache_service: CacheService, dish_service: DishServices
+    ) -> None:
         self.repository = repository
         self.cache_service = cache_service
+        self.dish_service = dish_service
 
     async def list(self, session: AsyncSession) -> Sequence[RowMapping]:
         cached_data = await self.cache_service.get_cache('list:menu')
@@ -34,7 +36,7 @@ class MenuServices:
             return cached_data
         result = await self.repository.get_tree_list(session=session)
         dishes = [dish for menu in result for submenu in menu.submenus for dish in submenu.dishes]
-        await self.set_discount(*dishes)
+        await self.dish_service.set_discount(*dishes)
         await self.cache_service.set_cache('list:tree', result)
         return result
 
@@ -72,10 +74,3 @@ class MenuServices:
             raise MenuNotFound
         background_tasks.add_task(self.cache_service.clear_cache, ('list:*', f'retrieve:{menu_id}*'))
         return JSONResponse(status_code=200, content={'detail': 'menu deleted'})
-
-    async def set_discount(self, *data: Dish) -> None:
-        for dish in data:
-            discount = await self.cache_service.get_cache(f'discount:{dish.id}')
-            if discount is not None:
-                discount = int(discount)
-                dish.price = Decimal(dish.price * (100 - discount) / 100).quantize(Decimal('1.00'))
