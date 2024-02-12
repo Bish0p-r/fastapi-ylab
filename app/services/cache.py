@@ -8,9 +8,8 @@ from app.config import settings
 
 class CacheService:
     def __init__(
-        self, ttl: int = settings.CACHE_TTL, host: str = settings.REDIS_HOST, port: int = settings.REDIS_PORT
+        self, host: str = settings.REDIS_HOST, port: int = settings.REDIS_PORT
     ) -> None:
-        self.ttl = ttl
         self.host = host
         self.port = port
 
@@ -25,8 +24,8 @@ class CacheService:
     async def clear_all_cache(self) -> None:
         await self.redis.flushall()
 
-    async def set_cache(self, key: str, value: Any) -> None:
-        await self.redis.set(key, pickle.dumps(value), ex=self.ttl)
+    async def set_cache(self, key: str, value: Any, ex: int | None = settings.CACHE_TTL) -> None:
+        await self.redis.set(key, pickle.dumps(value), ex=ex)
 
     async def get_cache(self, key: str) -> Any:
         cached_data = await self.redis.get(key)

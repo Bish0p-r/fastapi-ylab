@@ -47,7 +47,7 @@ class AdminServices:
 
     async def set_discount(self, data: list) -> None:
         for d in data:
-            await self.cache_service.set_cache(f'discount:{d["id"]}', d['discount'])
+            await self.cache_service.set_cache(f'discount:{d["id"]}', d['discount'], ex=None)
 
     async def start_sync(self, session: AsyncSession, parsed_data: dict) -> None:
         ids_data = {
