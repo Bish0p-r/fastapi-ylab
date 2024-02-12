@@ -73,7 +73,7 @@ class MenuServices:
         background_tasks.add_task(self.cache_service.clear_cache, ('list:*', f'retrieve:{menu_id}*'))
         return JSONResponse(status_code=200, content={'detail': 'menu deleted'})
 
-    async def set_discount(self, *data: Dish):
+    async def set_discount(self, *data: Dish) -> None:
         for dish in data:
             discount = await self.cache_service.get_cache(f'discount:{dish.id}')
             if discount is not None:
