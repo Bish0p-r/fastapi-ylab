@@ -48,10 +48,3 @@ class BaseRepository:
         result = await session.execute(query)
         await session.commit()
         return result.scalars().all()
-
-    @classmethod
-    async def test_create(cls, session: AsyncSession, data: dict) -> RowMapping | None:
-        query = insert(cls.model).values(**data).returning(cls.model.__table__.columns)
-        result = await session.execute(query)
-        await session.commit()
-        return result.mappings().one_or_none()
