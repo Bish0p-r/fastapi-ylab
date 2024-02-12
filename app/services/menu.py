@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Any, Sequence
 from uuid import UUID
 
@@ -8,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.exceptions import MenuNotFound, MenuWithThisTitleExists
+from app.models.dish import Dish
 from app.models.menu import Menu
 from app.repositories.menu import MenuRepository
 from app.services.cache import CacheService
@@ -31,6 +33,8 @@ class MenuServices:
         if cached_data is not None:
             return cached_data
         result = await self.repository.get_tree_list(session=session)
+        dishes = [dish for menu in result for submenu in menu.submenus for dish in submenu.dishes]
+        await self.set_discount(*dishes)
         await self.cache_service.set_cache('list:tree', result)
         return result
 
@@ -68,3 +72,10 @@ class MenuServices:
             raise MenuNotFound
         background_tasks.add_task(self.cache_service.clear_cache, ('list:*', f'retrieve:{menu_id}*'))
         return JSONResponse(status_code=200, content={'detail': 'menu deleted'})
+
+    async def set_discount(self, *data: Dish):
+        for dish in data:
+            discount = await self.cache_service.get_cache(f'discount:{dish.id}')
+            if discount is not None:
+                discount = int(discount)
+                dish.price = Decimal(dish.price * (100 - discount) / 100).quantize(Decimal('1.00'))

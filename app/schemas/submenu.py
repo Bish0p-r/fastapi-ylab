@@ -1,5 +1,5 @@
 from app.common.base.schema import BaseCreateSchema, BaseSchema
-from app.schemas.dish import DishDiscountedPriceSchema
+from app.schemas.dish import DishSchema
 
 
 class SubMenuSchema(BaseSchema):
@@ -19,4 +19,4 @@ class SubMenuUpdateSchema(BaseCreateSchema):
 
 
 class SubMenuTreeSchema(SubMenuSchema):
-    dishes: list[DishDiscountedPriceSchema]
+    dishes: list[DishSchema]
