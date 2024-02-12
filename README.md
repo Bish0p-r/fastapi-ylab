@@ -32,7 +32,7 @@
 Тест нового эндпоинта: [**app/tests/menu_tests/test_crud_menu_tree.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/menu_tests/test_crud_menu_tree.py)
 
 Исправления ДЗ №4:
-* Удалил поле "discount" из модели Dish, теперь скидки хранятся в кэше в формате Dish.id: discount
+* Удалил поле "discount" из модели Dish, теперь скидки хранятся в кэше в формате Dish.id: discount [**app/services/admin.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/admin.py#L48)
 * Логика расчета цены с учетом скидки происходит в сервисном слое: [**app/services/dish.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/dish.py#L91)
 * Скидки теперь парсятся отдельно [**app/common/utils/excel_parser.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/common/utils/excel_parser.py#L42)
 
