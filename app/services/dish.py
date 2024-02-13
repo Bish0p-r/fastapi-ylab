@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import Any, Sequence
 from uuid import UUID
 
@@ -12,19 +11,23 @@ from app.common.exceptions import DishNotFound, DishWithThisTitleExists
 from app.models.dish import Dish
 from app.repositories.dish import DishRepository
 from app.services.cache import CacheService
+from app.services.discount import DiscountServices
 
 
 class DishServices:
-    def __init__(self, repository: type[DishRepository], cache_service: CacheService) -> None:
+    def __init__(
+            self, repository: type[DishRepository], cache_service: CacheService, discount_service: DiscountServices
+    ) -> None:
         self.repository = repository
         self.cache_service = cache_service
+        self.discount_service = discount_service
 
     async def list(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID) -> Sequence[Dish] | Any:
         cached_data = await self.cache_service.get_cache('list:submenu')
         if cached_data is not None:
             return cached_data
         result = await self.repository.get_all_dishes(session=session, menu_id=menu_id, submenu_id=submenu_id)
-        await self.set_discount(*result)
+        await self.discount_service.set_discount(*result)
         await self.cache_service.set_cache('list:dish', result)
         return result
 
@@ -37,7 +40,7 @@ class DishServices:
         )
         if result is None:
             raise DishNotFound
-        await self.set_discount(result)
+        await self.discount_service.set_discount(result)
         await self.cache_service.set_cache(f'retrieve:{menu_id}-{submenu_id}-{dish_id}', result)
         return result
 
@@ -87,10 +90,3 @@ class DishServices:
             ),
         )
         return JSONResponse(status_code=200, content={'detail': 'dish deleted'})
-
-    async def set_discount(self, *data: Dish) -> None:
-        for dish in data:
-            discount = await self.cache_service.get_cache(f'discount:{dish.id}')
-            if discount is not None:
-                discount = int(discount)
-                dish.price = Decimal(dish.price * (100 - discount) / 100).quantize(Decimal('1.00'))

@@ -11,16 +11,16 @@ from app.common.exceptions import MenuNotFound, MenuWithThisTitleExists
 from app.models.menu import Menu
 from app.repositories.menu import MenuRepository
 from app.services.cache import CacheService
-from app.services.dish import DishServices
+from app.services.discount import DiscountServices
 
 
 class MenuServices:
     def __init__(
-            self, repository: type[MenuRepository], cache_service: CacheService, dish_service: DishServices
+            self, repository: type[MenuRepository], cache_service: CacheService, discount_service: DiscountServices
     ) -> None:
         self.repository = repository
         self.cache_service = cache_service
-        self.dish_service = dish_service
+        self.discount_service = discount_service
 
     async def list(self, session: AsyncSession) -> Sequence[RowMapping]:
         cached_data = await self.cache_service.get_cache('list:menu')
@@ -36,7 +36,7 @@ class MenuServices:
             return cached_data
         result = await self.repository.get_tree_list(session=session)
         dishes = [dish for menu in result for submenu in menu.submenus for dish in submenu.dishes]
-        await self.dish_service.set_discount(*dishes)
+        await self.discount_service.set_discount(*dishes)
         await self.cache_service.set_cache('list:tree', result)
         return result
 
