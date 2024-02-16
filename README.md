@@ -1,36 +1,17 @@
 <h1>Описание</h1>
 
-Домашние задания интенсива Ylab.
+API для работы с меню, подменю и блюдами.
 
-<h1>Выполненные задания со звездочкой</h1>
+<h1>Tech stack</h1>
 
-
-<h3>Дз №2</h3>
-
-Условие №3 (сложный ORM запрос): [**app/repositories/menu.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/repositories/menu.py)
-
-Условие №4 (тест кол-ва подменю/блюд): [**app/tests/menu_tests/test_crud_menu_counts.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/menu_tests/test_crud_menu_counts.py)
-
-
-<h3>Дз №3</h3>
-
-Условие №5 (описать эндпоинты): [**app/routes**](https://github.com/Bish0p-r/fastapi-ylab/tree/master/app/routes)
-
-Условие №6 (функция reverse()): [**app/tests/utils.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/utils.py)
-
-
-<h3>Дз №4</h3>
-
-Условие №5 (обновление меню из google sheets): [**app/tasks/excel_to_db.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tasks/excel_to_db.py)
-* Можете проверить работоспособность приложения с моей [ссылкой](https://docs.google.com/spreadsheets/d/1LRTFejM3Po-I5i6moHvloF_yhmKUsTW8/edit#gid=1700880523) (она открыта для редактирования) либо укажите в .env файле ваш айди ссылки в поле **GOOGLE_SHEETS_ID**, если айди будет указан неверно парсится будет файл в директории **admin/Menu.xlsx**, логи того что именно спарсилось можно посмотреть в контейнере **ylab_celery**.
-* Основная логика синхронизации описана в сервисе: [**app/services/admin.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/admin.py)
-* Логика парсинга находится в директории: [**app/common/utils/excel_parser.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/common/utils/excel_parser.py)
-
-Условие №6 (блюда по акции):
-* Скидки хранятся в кэше в формате Dish.id: discount [**app/services/admin.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/admin.py#L48)
-* Логика расчета цены с учетом скидки происходит в сервисном слое: [**app/services/discount.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/services/discount.py)
-
-Тест нового эндпоинта: [**app/tests/menu_tests/test_crud_menu_tree.py**](https://github.com/Bish0p-r/fastapi-ylab/blob/master/app/tests/menu_tests/test_crud_menu_tree.py)
+* **Python 3.10**
+* **FastAPI**
+* **PostgreSQL + async SQLAlchemy + asyncpg driver**
+* **Redis**
+* **Celery**
+* **Rabbitmq**
+* **Pytest**
+* **Docker + docker-compose**
 
 
 <h1>Установка</h1>
