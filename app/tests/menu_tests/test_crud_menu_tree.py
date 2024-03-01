@@ -18,7 +18,7 @@ async def test_tree_empty(ac: AsyncClient):
 
 
 async def test_tree_menu_create(
-        ac: AsyncClient, session: AsyncSession, request: FixtureRequest, menu_repo: MenuRepository
+    ac: AsyncClient, session: AsyncSession, request: FixtureRequest, menu_repo: MenuRepository
 ):
     data = {'title': 'Test CRUD menu title', 'description': 'Test CRUD menu description'}
     response = await ac.post(reverse('menu_create'), json=data)
@@ -34,7 +34,7 @@ async def test_tree_menu_create(
 
 
 async def test_tree_list_with_single_menu(
-        ac: AsyncClient, session: AsyncSession, menu_id: UUID, menu_repo: MenuRepository
+    ac: AsyncClient, session: AsyncSession, menu_id: UUID, menu_repo: MenuRepository
 ):
     response = await ac.get(reverse('menu_tree'))
     menu = await menu_repo.get_one_or_none_with_counts(session=session, menu_id=menu_id)
@@ -67,7 +67,7 @@ async def test_tree_submenu_create(
 
 
 async def test_tree_list_with_single_submenu(
-        ac: AsyncClient, session: AsyncSession, submenu_id: UUID, submenu_repo: SubMenuRepository, menu_id: UUID
+    ac: AsyncClient, session: AsyncSession, submenu_id: UUID, submenu_repo: SubMenuRepository, menu_id: UUID
 ):
     response = await ac.get(reverse('menu_tree'))
     submenu = await submenu_repo.get_one_or_none_with_counts(session=session, submenu_id=submenu_id, menu_id=menu_id)
@@ -87,7 +87,7 @@ async def test_tree_dish_create(
     request: FixtureRequest,
     dish_repo: DishRepository,
     menu_id: UUID,
-    submenu_id: UUID
+    submenu_id: UUID,
 ):
     data = {'title': 'Test CRUD submenu title', 'description': 'Test CRUD submenu description', 'price': '100.00'}
     response = await ac.post(reverse('dish_create', menu_id=menu_id, submenu_id=submenu_id), json=data)
@@ -106,14 +106,14 @@ async def test_tree_dish_create(
 
 
 async def test_tree_list(
-        ac: AsyncClient,
-        session: AsyncSession,
-        menu_id: UUID,
-        menu_repo: MenuRepository,
-        submenu_id: UUID,
-        submenu_repo: SubMenuRepository,
-        dish_id: UUID,
-        dish_repo: DishRepository
+    ac: AsyncClient,
+    session: AsyncSession,
+    menu_id: UUID,
+    menu_repo: MenuRepository,
+    submenu_id: UUID,
+    submenu_repo: SubMenuRepository,
+    dish_id: UUID,
+    dish_repo: DishRepository,
 ):
     response = await ac.get(reverse('menu_tree'))
     menu = await menu_repo.get_one_or_none_with_counts(session=session, menu_id=menu_id)
@@ -147,14 +147,14 @@ async def test_tree_list(
 
 
 async def test_tree_delete_all(
-        ac: AsyncClient,
-        session: AsyncSession,
-        menu_id: UUID,
-        menu_repo: MenuRepository,
-        submenu_id: UUID,
-        submenu_repo: SubMenuRepository,
-        dish_id: UUID,
-        dish_repo: DishRepository
+    ac: AsyncClient,
+    session: AsyncSession,
+    menu_id: UUID,
+    menu_repo: MenuRepository,
+    submenu_id: UUID,
+    submenu_repo: SubMenuRepository,
+    dish_id: UUID,
+    dish_repo: DishRepository,
 ):
     response = await ac.delete(reverse('menu_delete', menu_id=menu_id))
     menu = await menu_repo.get_one_or_none_with_counts(session=session, menu_id=menu_id)

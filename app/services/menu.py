@@ -1,4 +1,4 @@
-from typing import Any, Sequence
+from typing import Sequence
 from uuid import UUID
 
 from fastapi import BackgroundTasks
@@ -7,16 +7,20 @@ from sqlalchemy import RowMapping
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.abstract.repository.menu import AbstractMenuRepository
+from app.common.abstract.services.cache import AbstractCacheServices
+from app.common.abstract.services.discount import AbstractDiscountServices
+from app.common.abstract.services.menu import AbstractMenuServices
 from app.common.exceptions import MenuNotFound, MenuWithThisTitleExists
 from app.models.menu import Menu
-from app.repositories.menu import MenuRepository
-from app.services.cache import CacheService
-from app.services.discount import DiscountServices
 
 
-class MenuServices:
+class MenuServices(AbstractMenuServices):
     def __init__(
-            self, repository: type[MenuRepository], cache_service: CacheService, discount_service: DiscountServices
+        self,
+        repository: type[AbstractMenuRepository],
+        cache_service: AbstractCacheServices,
+        discount_service: AbstractDiscountServices,
     ) -> None:
         self.repository = repository
         self.cache_service = cache_service
@@ -30,7 +34,7 @@ class MenuServices:
         await self.cache_service.set_cache('list:menu', result)
         return result
 
-    async def tree(self, session: AsyncSession) -> Sequence[Menu] | Any:
+    async def tree(self, session: AsyncSession) -> Sequence[Menu]:
         cached_data = await self.cache_service.get_cache('list:tree')
         if cached_data is not None:
             return cached_data

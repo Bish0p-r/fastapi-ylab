@@ -1,4 +1,4 @@
-from typing import Any, Sequence
+from typing import Sequence
 from uuid import UUID
 
 from fastapi import BackgroundTasks
@@ -7,22 +7,26 @@ from sqlalchemy import RowMapping
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.abstract.repository.dish import AbstractDishRepository
+from app.common.abstract.services.cache import AbstractCacheServices
+from app.common.abstract.services.discount import AbstractDiscountServices
+from app.common.abstract.services.dish import AbstractDishServices
 from app.common.exceptions import DishNotFound, DishWithThisTitleExists
 from app.models.dish import Dish
-from app.repositories.dish import DishRepository
-from app.services.cache import CacheService
-from app.services.discount import DiscountServices
 
 
-class DishServices:
+class DishServices(AbstractDishServices):
     def __init__(
-            self, repository: type[DishRepository], cache_service: CacheService, discount_service: DiscountServices
+        self,
+        repository: type[AbstractDishRepository],
+        cache_service: AbstractCacheServices,
+        discount_service: AbstractDiscountServices,
     ) -> None:
         self.repository = repository
         self.cache_service = cache_service
         self.discount_service = discount_service
 
-    async def list(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID) -> Sequence[Dish] | Any:
+    async def list(self, session: AsyncSession, menu_id: UUID, submenu_id: UUID) -> Sequence[Dish]:
         cached_data = await self.cache_service.get_cache('list:submenu')
         if cached_data is not None:
             return cached_data

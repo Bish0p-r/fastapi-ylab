@@ -3,10 +3,11 @@ from typing import Sequence
 from sqlalchemy import RowMapping, delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.abstract.repository.base import AbstractCRUDRepository
 from app.common.base.model import BaseModel
 
 
-class BaseRepository:
+class BaseRepository(AbstractCRUDRepository):
     model: type[BaseModel]
 
     @classmethod

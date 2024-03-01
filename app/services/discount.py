@@ -1,10 +1,11 @@
 from decimal import Decimal
 
+from app.common.abstract.services.discount import AbstractDiscountServices
 from app.models.dish import Dish
 from app.services.cache import CacheService
 
 
-class DiscountServices:
+class DiscountServices(AbstractDiscountServices):
     def __init__(self, cache_service: CacheService) -> None:
         self.cache_service = cache_service
 

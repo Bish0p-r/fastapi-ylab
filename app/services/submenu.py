@@ -7,13 +7,14 @@ from sqlalchemy import RowMapping
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.abstract.repository.submenu import AbstractSubMenuRepository
+from app.common.abstract.services.cache import AbstractCacheServices
+from app.common.abstract.services.submenu import AbstractSubMenuServices
 from app.common.exceptions import SubMenuNotFound, SubMenuWithThisTitleExists
-from app.repositories.submenu import SubMenuRepository
-from app.services.cache import CacheService
 
 
-class SubMenuServices:
-    def __init__(self, repository: type[SubMenuRepository], cache_service: CacheService) -> None:
+class SubMenuServices(AbstractSubMenuServices):
+    def __init__(self, repository: type[AbstractSubMenuRepository], cache_service: AbstractCacheServices) -> None:
         self.repository = repository
         self.cache_service = cache_service
 

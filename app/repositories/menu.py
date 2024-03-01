@@ -5,13 +5,14 @@ from sqlalchemy import RowMapping, distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.common.abstract.repository.menu import AbstractMenuRepository
 from app.common.base.repository import BaseRepository
 from app.models.dish import Dish
 from app.models.menu import Menu
 from app.models.submenu import SubMenu
 
 
-class MenuRepository(BaseRepository):
+class MenuRepository(BaseRepository, AbstractMenuRepository):
     model = Menu
 
     @classmethod

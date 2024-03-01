@@ -4,12 +4,13 @@ from uuid import UUID
 from sqlalchemy import RowMapping, distinct, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.abstract.repository.submenu import AbstractSubMenuRepository
 from app.common.base.repository import BaseRepository
 from app.models.dish import Dish
 from app.models.submenu import SubMenu
 
 
-class SubMenuRepository(BaseRepository):
+class SubMenuRepository(BaseRepository, AbstractSubMenuRepository):
     model = SubMenu
 
     @classmethod

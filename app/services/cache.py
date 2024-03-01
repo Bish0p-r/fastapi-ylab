@@ -3,13 +3,12 @@ from typing import Any
 
 from redis import asyncio as aioredis
 
+from app.common.abstract.services.cache import AbstractCacheServices
 from app.config import settings
 
 
-class CacheService:
-    def __init__(
-        self, host: str = settings.REDIS_HOST, port: int = settings.REDIS_PORT
-    ) -> None:
+class CacheService(AbstractCacheServices):
+    def __init__(self, host: str = settings.REDIS_HOST, port: int = settings.REDIS_PORT) -> None:
         self.host = host
         self.port = port
 

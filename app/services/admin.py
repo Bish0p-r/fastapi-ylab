@@ -2,20 +2,20 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.common.base.repository import BaseRepository
-from app.repositories.dish import DishRepository
-from app.repositories.menu import MenuRepository
-from app.repositories.submenu import SubMenuRepository
-from app.services.cache import CacheService
+from app.common.abstract.repository.base import AbstractCRUDRepository
+from app.common.abstract.repository.dish import AbstractDishRepository
+from app.common.abstract.repository.menu import AbstractMenuRepository
+from app.common.abstract.repository.submenu import AbstractSubMenuRepository
+from app.common.abstract.services.cache import AbstractCacheServices
 
 
 class AdminServices:
     def __init__(
-            self,
-            menu_repo: type[MenuRepository],
-            submenu_repo: type[SubMenuRepository],
-            dish_repo: type[DishRepository],
-            cache_service: CacheService
+        self,
+        menu_repo: type[AbstractMenuRepository],
+        submenu_repo: type[AbstractSubMenuRepository],
+        dish_repo: type[AbstractDishRepository],
+        cache_service: AbstractCacheServices,
     ) -> None:
         self.menu_repo = menu_repo
         self.submenu_repo = submenu_repo
@@ -35,7 +35,7 @@ class AdminServices:
         await self.dish_repo.delete_not_in_list(session, ids_data['dishes'])
 
     async def create_or_update(
-            self, repo: type[BaseRepository], data: list, fields: tuple, session: AsyncSession
+        self, repo: type[AbstractCRUDRepository], data: list, fields: tuple, session: AsyncSession
     ) -> None:
         for item in data:
             existed_item = await repo.get_one_or_none(session, id=item['id'])
@@ -53,13 +53,11 @@ class AdminServices:
         ids_data = {
             'menus': [i['id'] for i in parsed_data['menus']],
             'submenus': [i['id'] for i in parsed_data['submenus']],
-            'dishes': [i['id'] for i in parsed_data['dishes']]
+            'dishes': [i['id'] for i in parsed_data['dishes']],
         }
         await self.cache_service.clear_all_cache()
         await self.delete_not_in(session, ids_data)
         await self.create_or_update(self.menu_repo, parsed_data['menus'], ('title', 'description'), session)
         await self.create_or_update(self.submenu_repo, parsed_data['submenus'], ('title', 'description'), session)
-        await self.create_or_update(
-            self.dish_repo, parsed_data['dishes'], ('title', 'description', 'price'), session
-        )
+        await self.create_or_update(self.dish_repo, parsed_data['dishes'], ('title', 'description', 'price'), session)
         await self.set_discount(parsed_data['discounts'])

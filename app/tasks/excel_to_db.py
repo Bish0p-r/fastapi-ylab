@@ -20,7 +20,7 @@ def get_parsed_data(file_path: str = settings.google_sheets_url) -> dict[str, li
         df = pd.read_excel(file_path, header=None)
         logger.info('Get parsed data from Google Sheets')
     except HTTPError:
-        logger.info('Can\'t get parsed data from Google Sheets')
+        logger.info("Can't get parsed data from Google Sheets")
         df = pd.read_excel('admin/Menu.xlsx', header=None)
         logger.info('Get parsed data from local file')
     return parse_data(df)
